@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">FinalProject</string>
+    <string name="app_name">Pixeloca</string>
+    <string name="intro_text">Welcome!\nPlease choose a username below.</string>
+    <string name="caption">Caption</string>
+    <string name="username">Name</string>
+    <string name="location">Location</string>
+    <string name="post_thumbnail">Post thumbnail</string>
 </resources>
