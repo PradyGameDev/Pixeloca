@@ -7,7 +7,7 @@
                                              android:background="@drawable/bg2"
                                              tools:context="edu.illinois.finalproject.activities.IntroActivity">
 
-    <TextView
+    <EditText
         android:id="@+id/username"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

@@ -18,6 +18,10 @@
         </activity>
         <activity android:name=".activities.FeedActivity">
         </activity>
+        <activity android:name=".activities.PostDetailViewActivity">
+        </activity>
+        <activity android:name=".activities.NewPostActivity">
+        </activity>
     </application>
 
 </manifest>

@@ -5,4 +5,6 @@
     <string name="username">Name</string>
     <string name="location">Location</string>
     <string name="post_thumbnail">Post thumbnail</string>
+    <string name="create_new_post">New Post</string>
+    <string name="action_settings">Settings</string>
 </resources>

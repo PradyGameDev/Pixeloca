@@ -26,7 +26,7 @@
             android:padding="@dimen/padding">
 
             <ImageView
-                android:id="@+id/restaurant_thumbnail"
+                android:id="@+id/post_thumbnail"
                 android:layout_width="75dp"
                 android:layout_height="75dp"
                 android:layout_marginEnd="5dp"
@@ -42,7 +42,7 @@
                 android:weightSum="3">
 
                 <TextView
-                    android:id="@+id/restaurant_name"
+                    android:id="@+id/post_caption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/caption"
@@ -56,14 +56,14 @@
                     android:weightSum="1">
 
                     <TextView
-                        android:id="@+id/restaurant_cuisines"
+                        android:id="@+id/post_username"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/username"
                         android:textSize="14sp"/>
 
                     <TextView
-                        android:id="@+id/restaurant_rating"
+                        android:id="@+id/post_location"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/location"
