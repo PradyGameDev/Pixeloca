@@ -3,15 +3,24 @@ package edu.illinois.finalproject.schemas;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.net.URI;
-
 public class Post implements Parcelable {
+    public static final Parcelable.Creator<Post> CREATOR = new Parcelable.Creator<Post>() {
+        @Override
+        public Post createFromParcel(Parcel source) {
+            return new Post(source);
+        }
+
+        @Override
+        public Post[] newArray(int size) {
+            return new Post[size];
+        }
+    };
     private String username;
-    private URI imageUri;
+    private String imageUri;
     private String caption;
     private String location;
 
-    public Post(String username, URI imageUri, String caption, String location) {
+    public Post(String username, String imageUri, String caption, String location) {
         this.username = username;
         this.imageUri = imageUri;
         this.caption = caption;
@@ -22,6 +31,13 @@ public class Post implements Parcelable {
 
     }
 
+    protected Post(Parcel in) {
+        this.username = in.readString();
+        this.imageUri = in.readString();
+        this.caption = in.readString();
+        this.location = in.readString();
+    }
+
     public String getUsername() {
         return username;
     }
@@ -30,11 +46,11 @@ public class Post implements Parcelable {
         this.username = username;
     }
 
-    public URI getImageUri() {
+    public String getImageUri() {
         return imageUri;
     }
 
-    public void setImageUri(URI imageUri) {
+    public void setImageUri(String imageUri) {
         this.imageUri = imageUri;
     }
 
@@ -59,6 +75,7 @@ public class Post implements Parcelable {
         return String.format("Post {username='%s', imageUri='%s', caption='%s', location='%s'}",
                              username, imageUri, caption, location);
     }
+
     //Parcelable boilerplate
     @Override
     public int describeContents() {
@@ -68,27 +85,8 @@ public class Post implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.username);
-        dest.writeSerializable(this.imageUri);
+        dest.writeString(this.imageUri);
         dest.writeString(this.caption);
         dest.writeString(this.location);
     }
-
-    protected Post(Parcel in) {
-        this.username = in.readString();
-        this.imageUri = (URI) in.readSerializable();
-        this.caption = in.readString();
-        this.location = in.readString();
-    }
-
-    public static final Parcelable.Creator<Post> CREATOR = new Parcelable.Creator<Post>() {
-        @Override
-        public Post createFromParcel(Parcel source) {
-            return new Post(source);
-        }
-
-        @Override
-        public Post[] newArray(int size) {
-            return new Post[size];
-        }
-    };
 }

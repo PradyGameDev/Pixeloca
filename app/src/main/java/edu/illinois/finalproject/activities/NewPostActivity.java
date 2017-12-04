@@ -5,9 +5,11 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
@@ -22,6 +24,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import edu.illinois.finalproject.R;
 import edu.illinois.finalproject.processing.DatabaseManager;
+import edu.illinois.finalproject.processing.LocationHandler;
+import edu.illinois.finalproject.schemas.Post;
 
 public class NewPostActivity extends AppCompatActivity {
 
@@ -39,13 +43,14 @@ public class NewPostActivity extends AppCompatActivity {
     Button postButton;
     private Uri imageUri;
     private DatabaseManager databaseManager;
-
+    private LocationHandler locationHandler;
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_post);
         ButterKnife.bind(this);
+        locationHandler = new LocationHandler(locationTextView, this);
         databaseManager = new DatabaseManager(this);
     }
 
@@ -79,9 +84,34 @@ public class NewPostActivity extends AppCompatActivity {
                     .rotate(rotationInDegrees)
                     .into(imageView);
             databaseManager.storeImageInFirebase(imageUri, imageView);
-            //}
         }
     }
+
+    public void onLocationButtonClick(View v) {
+        locationHandler.setupLocationGathering();
+    }
+
+    /**
+     * Called when the Post button is tapped. Combines the data into a Post object and uploads it
+     * to Firebase.
+     *
+     * @param v A reference to the Post button.
+     */
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void onPostButtonClick(View v) {
+        String username = PreferenceManager.getDefaultSharedPreferences(this)
+                .getString
+                        (IntroActivity.USERNAME, IntroActivity.USERNAME_NOT_SET);
+        String caption = captionEditText.getText()
+                .toString();
+        String location = locationTextView.getText()
+                .toString();
+        String imageLink = databaseManager.getLastImageFirebaseUrl();
+        location = locationHandler.getLastKnownLocation();
+        Log.d("Location", location);
+        databaseManager.createAndUploadPost(new Post(username, imageLink, caption, location));
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -89,4 +119,5 @@ public class NewPostActivity extends AppCompatActivity {
         inflater.inflate(R.menu.action_bar_menu2, menu);
         return true;
     }
+
 }

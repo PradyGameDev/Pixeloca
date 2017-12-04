@@ -1,11 +1,9 @@
 package edu.illinois.finalproject.processing;
 
 import android.content.Context;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.FileProvider;
@@ -45,29 +43,30 @@ import static android.widget.Toast.LENGTH_SHORT;
  */
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class DatabaseManager {
-    private Context context;
-    //Realtime Database variables
-    private FirebaseDatabase firebaseDatabase;
-    private static List<Post> posts = new ArrayList<>();
-    private DatabaseReference newPostReference;
-    private DatabaseReference parentReference;
-
-    //Firebase Storage variables
-    private Uri imageUri;
-    private String absoluteFilePath;
     public static final String PATTERN = "yyyyMMdd_HHmmss";
     public static final String DOWNLOAD_URL = "downloadURL";
     public static final String IMAGES_SUBTREE = "images/%s";
     public static final int CAPTURE_REQUEST_CODE = 1;
+    private static List<Post> posts = new ArrayList<>();
+    private Context context;
+    //Realtime Database variables
+    private FirebaseDatabase database;
+    private DatabaseReference newPostReference;
+    private DatabaseReference parentReference;
+    //Firebase Storage variables
+    private Uri imageUri;
+    private String absoluteFilePath;
+    private String lastImageFirebaseUrl;
 
     public DatabaseManager(Context context) {
         this.context = context;
+        database = FirebaseDatabase.getInstance();
     }
 
     public DatabaseManager(Context context, RecyclerView recyclerView) {
         this.context = context;
         final CountDownLatch writeSignal = new CountDownLatch(1);
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        database = FirebaseDatabase.getInstance();
         parentReference = database.getReference("posts");
         parentReference.addChildEventListener(new ChildEventListener() {
             @Override
@@ -102,14 +101,18 @@ public class DatabaseManager {
         });
     }
 
-    public void createAndUploadPost(Post post) {
-        newPostReference =
-                firebaseDatabase.getReference("posts/" + Math.abs(new Random().nextLong()));
-        newPostReference.setValue(post);
-    }
-
     public static List<Post> getPosts() {
         return posts;
+    }
+
+    public String getLastImageFirebaseUrl() {
+        return lastImageFirebaseUrl;
+    }
+
+    public void createAndUploadPost(Post post) {
+        newPostReference =
+                database.getReference("posts/" + Math.abs(new Random().nextLong()));
+        newPostReference.setValue(post);
     }
 
     public Uri createImageFile() {
@@ -132,7 +135,7 @@ public class DatabaseManager {
                 .getAbsolutePath();
         // Save a file: path for use with ACTION_VIEW intents
         Log.v("Debug", String.valueOf(image.getAbsoluteFile()));
-        return FileProvider.getUriForFile(context, "edu.illinois.techdemonstration",
+        return FileProvider.getUriForFile(context, "edu.illinois.finalproject",
                                           image.getAbsoluteFile());
     }
 
@@ -152,6 +155,7 @@ public class DatabaseManager {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                                lastImageFirebaseUrl = downloadUrl.toString();
                                 Log.v(DOWNLOAD_URL, String.valueOf(downloadUrl));
                                 String outputString = String.format("Image was uploaded with URL:" +
                                                                             " %s", downloadUrl
