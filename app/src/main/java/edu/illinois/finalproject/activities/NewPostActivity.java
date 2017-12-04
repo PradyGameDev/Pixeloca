@@ -44,6 +44,7 @@ public class NewPostActivity extends AppCompatActivity {
     private Uri imageUri;
     private DatabaseManager databaseManager;
     private LocationHandler locationHandler;
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,11 +108,9 @@ public class NewPostActivity extends AppCompatActivity {
         String location = locationTextView.getText()
                 .toString();
         String imageLink = databaseManager.getLastImageFirebaseUrl();
-        location = locationHandler.getLastKnownLocation();
         Log.d("Location", location);
         databaseManager.createAndUploadPost(new Post(username, imageLink, caption, location));
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
