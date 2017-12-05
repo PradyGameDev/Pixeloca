@@ -113,6 +113,8 @@ public class DatabaseManager {
         newPostReference =
                 database.getReference("posts/" + Math.abs(new Random().nextLong()));
         newPostReference.setValue(post);
+        Toast.makeText(context, "Post successfully uploaded!", Toast.LENGTH_SHORT)
+                .show();
     }
 
     public Uri createImageFile() {

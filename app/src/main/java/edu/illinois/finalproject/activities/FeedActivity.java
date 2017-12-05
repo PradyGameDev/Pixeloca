@@ -3,18 +3,16 @@ package edu.illinois.finalproject.activities;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import java.util.ArrayList;
 
@@ -24,14 +22,13 @@ import edu.illinois.finalproject.R;
 import edu.illinois.finalproject.processing.DatabaseManager;
 import edu.illinois.finalproject.schemas.Post;
 
-import static edu.illinois.finalproject.activities.IntroActivity.*;
+import static edu.illinois.finalproject.activities.IntroActivity.USERNAME;
+import static edu.illinois.finalproject.activities.IntroActivity.USERNAME_NOT_SET;
 
 public class FeedActivity extends AppCompatActivity {
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
-    @BindView(R.id.my_toolbar)
-    android.support.v7.widget.Toolbar toolbar;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -41,7 +38,7 @@ public class FeedActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         welcomeUser();
         DatabaseManager dbManager = new DatabaseManager(this, recyclerView);
-        setSupportActionBar(toolbar);
+        //setSupportActionBar(toolbar);
     }
 
     @Override
@@ -66,6 +63,8 @@ public class FeedActivity extends AppCompatActivity {
                 Toast.makeText(this, "New post created.", Toast.LENGTH_SHORT)
                         .show();
                 openNewPostActivity();
+                //Intent goBackIntent = new Intent(this, FeedActivity.class);
+                //startActivity(goBackIntent);
                 return true;
             }
             case R.id.action_settings: {

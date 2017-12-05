@@ -16,8 +16,8 @@ public class GeocodingManager {
         fetchAddress(location);
     }
 
-    private static void fetchAddress(Location location) {
-        GeocoderAsyncTask asyncTask = new GeocoderAsyncTask(location);
+    private void fetchAddress(Location location) {
+        GeocoderAsyncTask asyncTask = new GeocoderAsyncTask(this, location);
         asyncTask.execute();
     }
 
@@ -29,16 +29,16 @@ public class GeocodingManager {
      * For internal use only. To get an address of a location, call fetchAddress.
      * Called once the AsyncTask returns a response.
      *
-     * @param location The location to be reverse-geocoded.
      * @param response The response from the GeocoderAsyncTask.
      * @return A formatted real-world address of the given coordinates. If the AsyncTask fails,
      * it returns a formatted string with coordinates.
      */
-    public void onResponseReceived(Location location, ReverseGeocoderResponse response) {
+    public void onResponseReceived(ReverseGeocoderResponse response) {
 
         if (response == null) {
             lastKnownFormattedAddress = String.format("%s, %s", location.getLatitude(), location
                     .getLongitude());
+            return;
         }
         String formattedAddress = response.getResults()
                 .get(0)

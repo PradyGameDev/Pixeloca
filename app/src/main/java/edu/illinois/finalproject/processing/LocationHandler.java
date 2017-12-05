@@ -24,7 +24,7 @@ public class LocationHandler {
         this.context = context;
     }
 
-    public void setupLocationGathering() {
+    public void setUpLocationGathering() {
         if (ContextCompat.checkSelfPermission(context,
                                               Manifest.permission.READ_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -94,16 +94,14 @@ public class LocationHandler {
         GeocodingManager geocodingManager = new GeocodingManager(
                 locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
         locationTextView.setText(geocodingManager.getLastKnownFormattedAddress());
-
     }
 
     /**
-     * Called once a new location is found, for processing the user's current lcoation
+     * Called once a new location is found, for processing the user's current location
      *
      * @param locationManager The manager in the current context.
      */
     private void makeUseOfNewLocation(LocationManager locationManager) {
-        Log.v("Location", locationManager.toString());
         Log.v("Location", "Debug");
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) !=
                 PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context,
@@ -127,10 +125,8 @@ public class LocationHandler {
                                                       .permission_group.LOCATION},
                                               MY_PERMISSIONS_REQUEST_ACCESS_LOCATION);
         }
-        GeocodingManager geocodingManager = new GeocodingManager(
-                locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+        lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        GeocodingManager geocodingManager = new GeocodingManager(lastKnownLocation);
         locationTextView.setText(geocodingManager.getLastKnownFormattedAddress());
-        lastKnownLocation =
-                locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
     }
 }

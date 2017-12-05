@@ -21,9 +21,11 @@ import edu.illinois.finalproject.schemas.ReverseGeocoderResponse;
 public class GeocoderAsyncTask extends AsyncTask<String, Location, ReverseGeocoderResponse> {
     public static final String BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json";
     private Location location;
+    private GeocodingManager geocodingManager;
 
-    public GeocoderAsyncTask(Location location) {
+    public GeocoderAsyncTask(GeocodingManager geocodingManager, Location location) {
         this.location = location;
+        this.geocodingManager = geocodingManager;
     }
 
     @Override
@@ -46,7 +48,9 @@ public class GeocoderAsyncTask extends AsyncTask<String, Location, ReverseGeocod
             Gson gson = new Gson();
             ReverseGeocoderResponse response = gson.fromJson(inputStreamReader,
                                                              ReverseGeocoderResponse.class);
-            Log.v("Gson response", response.toString());
+            Log.v("Gson response", response.getResults()
+                    .get(0)
+                    .getFormattedAddress());
             return response;
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -58,6 +62,6 @@ public class GeocoderAsyncTask extends AsyncTask<String, Location, ReverseGeocod
 
     @Override
     protected void onPostExecute(ReverseGeocoderResponse reverseGeocoderResponse) {
-
+        geocodingManager.onResponseReceived(reverseGeocoderResponse);
     }
 }
