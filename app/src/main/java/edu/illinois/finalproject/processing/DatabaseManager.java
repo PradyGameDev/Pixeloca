@@ -30,8 +30,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.CountDownLatch;
 
 import edu.illinois.finalproject.schemas.Post;
 import edu.illinois.finalproject.util.RecyclerViewAdapter;
@@ -43,7 +41,7 @@ import static android.widget.Toast.LENGTH_SHORT;
  */
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class DatabaseManager {
-    public static final String PATTERN = "yyyyMMdd_HHmmss";
+    public static final String PATTERN = "yyyy-MM-dd_HHmmss";
     public static final String DOWNLOAD_URL = "downloadURL";
     public static final String IMAGES_SUBTREE = "images/%s";
     public static final int CAPTURE_REQUEST_CODE = 1;
@@ -65,7 +63,6 @@ public class DatabaseManager {
 
     public DatabaseManager(Context context, RecyclerView recyclerView) {
         this.context = context;
-        final CountDownLatch writeSignal = new CountDownLatch(1);
         database = FirebaseDatabase.getInstance();
         parentReference = database.getReference("posts");
         parentReference.addChildEventListener(new ChildEventListener() {
@@ -111,7 +108,7 @@ public class DatabaseManager {
 
     public void createAndUploadPost(Post post) {
         newPostReference =
-                database.getReference("posts/" + Math.abs(new Random().nextLong()));
+                database.getReference("posts/" + post.getDate());
         newPostReference.setValue(post);
         Toast.makeText(context, "Post successfully uploaded!", Toast.LENGTH_SHORT)
                 .show();
@@ -172,7 +169,7 @@ public class DatabaseManager {
                     public void onFailure(
                             @NonNull
                                     Exception e) {
-                        Toast.makeText(imageView.getContext(), "Image did not upload to Firebase",
+                        Toast.makeText(imageView.getContext(), "Image did not upload to Firebase.",
                                        LENGTH_SHORT)
                                 .show();
                     }

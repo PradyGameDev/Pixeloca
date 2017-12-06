@@ -18,6 +18,7 @@ public class LocationHandler {
     private TextView locationTextView;
     private Context context;
     private Location lastKnownLocation;
+    private GeocodingManager geocodingManager;
 
     public LocationHandler(TextView locationTextView, Context context) {
         this.locationTextView = locationTextView;
@@ -91,8 +92,9 @@ public class LocationHandler {
                                                locationListener);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,
                                                locationListener);
-        GeocodingManager geocodingManager = new GeocodingManager(
-                locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+        geocodingManager = new GeocodingManager(
+                locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER),
+                locationTextView);
         locationTextView.setText(geocodingManager.getLastKnownFormattedAddress());
     }
 
@@ -126,7 +128,8 @@ public class LocationHandler {
                                               MY_PERMISSIONS_REQUEST_ACCESS_LOCATION);
         }
         lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        GeocodingManager geocodingManager = new GeocodingManager(lastKnownLocation);
+        geocodingManager = new GeocodingManager(lastKnownLocation, locationTextView);
+        Log.v("LocationLastKnown", geocodingManager.getLastKnownFormattedAddress());
         locationTextView.setText(geocodingManager.getLastKnownFormattedAddress());
     }
 }

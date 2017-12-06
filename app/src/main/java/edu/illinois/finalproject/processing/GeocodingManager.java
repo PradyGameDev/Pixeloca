@@ -2,22 +2,25 @@ package edu.illinois.finalproject.processing;
 
 import android.location.Location;
 import android.util.Log;
+import android.widget.TextView;
 
 import edu.illinois.finalproject.schemas.ReverseGeocoderResponse;
 
 public class GeocodingManager {
     private String lastKnownFormattedAddress;
     private Location location;
+    private TextView textView;
 
-    public GeocodingManager(Location location) {
+    public GeocodingManager(Location location, TextView textView) {
         this.location = location;
         this.lastKnownFormattedAddress = String.format("%s, %s", location.getLatitude(), location
                 .getLongitude());
+        this.textView = textView;
         fetchAddress(location);
     }
 
     private void fetchAddress(Location location) {
-        GeocoderAsyncTask asyncTask = new GeocoderAsyncTask(this, location);
+        GeocoderAsyncTask asyncTask = new GeocoderAsyncTask(this, location, textView);
         asyncTask.execute();
     }
 
@@ -34,16 +37,19 @@ public class GeocodingManager {
      * it returns a formatted string with coordinates.
      */
     public void onResponseReceived(ReverseGeocoderResponse response) {
-
-        if (response == null) {
+        boolean geocoderFoundAddress =
+                response != null && response.getResults() != null && !response.getResults()
+                        .isEmpty();
+        if (geocoderFoundAddress) {
+            String formattedAddress = response.getResults()
+                    .get(0)
+                    .getFormattedAddress();
+            lastKnownFormattedAddress = formattedAddress;
+            Log.v("Location", lastKnownFormattedAddress);
+        } else {
             lastKnownFormattedAddress = String.format("%s, %s", location.getLatitude(), location
                     .getLongitude());
-            return;
         }
-        String formattedAddress = response.getResults()
-                .get(0)
-                .getFormattedAddress();
-        lastKnownFormattedAddress = formattedAddress;
-        Log.v("Location", formattedAddress);
+        textView.setText(lastKnownFormattedAddress);
     }
 }

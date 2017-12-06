@@ -4,6 +4,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 
@@ -22,10 +23,13 @@ public class GeocoderAsyncTask extends AsyncTask<String, Location, ReverseGeocod
     public static final String BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json";
     private Location location;
     private GeocodingManager geocodingManager;
+    private TextView textView;
 
-    public GeocoderAsyncTask(GeocodingManager geocodingManager, Location location) {
+    public GeocoderAsyncTask(GeocodingManager geocodingManager, Location location,
+                             TextView textView) {
         this.location = location;
         this.geocodingManager = geocodingManager;
+        this.textView = textView;
     }
 
     @Override
@@ -48,9 +52,9 @@ public class GeocoderAsyncTask extends AsyncTask<String, Location, ReverseGeocod
             Gson gson = new Gson();
             ReverseGeocoderResponse response = gson.fromJson(inputStreamReader,
                                                              ReverseGeocoderResponse.class);
-            Log.v("Gson response", response.getResults()
-                    .get(0)
-                    .getFormattedAddress());
+            //Log.v("Gson response", response.getResults()
+            //        .get(0)
+            //        .getFormattedAddress());
             return response;
         } catch (MalformedURLException e) {
             e.printStackTrace();

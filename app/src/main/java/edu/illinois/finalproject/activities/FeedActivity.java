@@ -2,6 +2,7 @@ package edu.illinois.finalproject.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -12,7 +13,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.Toast;
+
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
 import java.util.ArrayList;
 
@@ -29,6 +34,8 @@ public class FeedActivity extends AppCompatActivity {
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
+    @BindView(R.id.pull_to_refresh_listview)
+    PullToRefreshListView pullToRefreshListView;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -36,9 +43,16 @@ public class FeedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
         ButterKnife.bind(this);
+        pullToRefreshListView.setOnRefreshListener(
+                new PullToRefreshBase.OnRefreshListener<ListView>() {
+                    @Override
+                    public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+                        // Do work to refresh the list here.
+                        new GetDataTask().execute();
+                    }
+                });
         welcomeUser();
         DatabaseManager dbManager = new DatabaseManager(this, recyclerView);
-        //setSupportActionBar(toolbar);
     }
 
     @Override
@@ -60,8 +74,8 @@ public class FeedActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.action_create_new_post: {
-                Toast.makeText(this, "New post created.", Toast.LENGTH_SHORT)
-                        .show();
+                //Toast.makeText(this, "New post created.", Toast.LENGTH_SHORT)
+                //        .show();
                 openNewPostActivity();
                 //Intent goBackIntent = new Intent(this, FeedActivity.class);
                 //startActivity(goBackIntent);
@@ -101,6 +115,20 @@ public class FeedActivity extends AppCompatActivity {
                             .get(position));
             v.getContext()
                     .startActivity(detailViewIntent);
+        }
+    }
+
+    private class GetDataTask extends AsyncTask<Void, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            // Call onRefreshComplete when the list has been refreshed.
+            pullToRefreshListView.onRefreshComplete();
+            super.onPostExecute(result);
         }
     }
 }

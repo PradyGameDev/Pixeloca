@@ -19,12 +19,14 @@ public class Post implements Parcelable {
     private String imageUri;
     private String caption;
     private String location;
+    private String date;
 
-    public Post(String username, String imageUri, String caption, String location) {
+    public Post(String username, String imageUri, String caption, String location, String date) {
         this.username = username;
         this.imageUri = imageUri;
         this.caption = caption;
         this.location = location;
+        this.date = date;
     }
 
     public Post() {
@@ -36,6 +38,7 @@ public class Post implements Parcelable {
         this.imageUri = in.readString();
         this.caption = in.readString();
         this.location = in.readString();
+        this.date = in.readString();
     }
 
     public String getUsername() {
@@ -70,10 +73,23 @@ public class Post implements Parcelable {
         this.location = location;
     }
 
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
     @Override
     public String toString() {
-        return String.format("Post {username='%s', imageUri='%s', caption='%s', location='%s'}",
-                             username, imageUri, caption, location);
+        return "Post{" +
+                "username='" + username + '\'' +
+                ", imageUri='" + imageUri + '\'' +
+                ", caption='" + caption + '\'' +
+                ", location='" + location + '\'' +
+                ", date='" + date + '\'' +
+                '}';
     }
 
     //Parcelable boilerplate
@@ -88,5 +104,6 @@ public class Post implements Parcelable {
         dest.writeString(this.imageUri);
         dest.writeString(this.caption);
         dest.writeString(this.location);
+        dest.writeString(this.date);
     }
 }

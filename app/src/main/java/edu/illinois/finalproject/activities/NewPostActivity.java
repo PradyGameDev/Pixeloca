@@ -22,6 +22,10 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import edu.illinois.finalproject.R;
@@ -123,6 +127,9 @@ public class NewPostActivity extends AppCompatActivity {
         locationHandler.setUpLocationGathering();
     }
 
+    public void updateLocationTextView(String latestFormattedAddress) {
+        captionEditText.setText(latestFormattedAddress);
+    }
     /**
      * Called when the Post button on the Toolbar is tapped. Combines the data into a Post object
      * and uploads it to Firebase.
@@ -137,8 +144,15 @@ public class NewPostActivity extends AppCompatActivity {
         String location = locationTextView.getText()
                 .toString();
         String imageLink = databaseManager.getLastImageFirebaseUrl();
+        String date =
+                new SimpleDateFormat(DatabaseManager.PATTERN, Locale.getDefault()).format(Calendar
+                                                                                                  .getInstance()
+
+
+
+                                                                                                  .getTime());
         Log.d("Location", location);
-        databaseManager.createAndUploadPost(new Post(username, imageLink, caption, location));
+        databaseManager.createAndUploadPost(new Post(username, imageLink, caption, location, date));
     }
 
 }
