@@ -1,7 +1,8 @@
 package edu.illinois.finalproject.activities;
 
+import android.Manifest;
 import android.content.Intent;
-import android.media.ExifInterface;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -35,8 +36,6 @@ import edu.illinois.finalproject.schemas.Post;
 
 public class NewPostActivity extends AppCompatActivity {
 
-    @BindView(R.id.textView)
-    TextView textView;
     @BindView(R.id.imageView)
     ImageView imageView;
     @BindView(R.id.locationButton)
@@ -46,8 +45,9 @@ public class NewPostActivity extends AppCompatActivity {
     @BindView(R.id.captionEditText)
     EditText captionEditText;
     private Uri imageUri;
-    private DatabaseManager databaseManager;
+    private DatabaseManager photoDatabase;
     private LocationHandler locationHandler;
+    private float rotationInDegrees = 90f;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -55,8 +55,21 @@ public class NewPostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_post);
         ButterKnife.bind(this);
+        photoDatabase = new DatabaseManager(this);
         locationHandler = new LocationHandler(locationTextView, this);
-        databaseManager = new DatabaseManager(this);
+        Log.v("Debug", "Is this even getting called?" + imageUri);
+        capturePhoto();
+        askForLocationPermissions();
+    }
+
+    public void askForLocationPermissions() {
+        if (this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED) {
+            Log.d("ASDF", "setUpLocationGathering: ");
+            this.requestPermissions(
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    LocationHandler.MY_PERMISSIONS_REQUEST_ACCESS_LOCATION);
+        }
     }
 
     @Override
@@ -74,10 +87,6 @@ public class NewPostActivity extends AppCompatActivity {
                 onPostButtonClick();
                 return true;
             }
-            case R.id.action_capture_photo: {
-                onPhotoButtonClick();
-            }
-
             case R.id.action_settings: {
                 Toast.makeText(this, "Opened settings.", Toast.LENGTH_SHORT)
                         .show();
@@ -89,11 +98,54 @@ public class NewPostActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[]
+            grantResults) {
+        Log.d("ASDF", String.format("Request Code: %d", requestCode));
+        locationHandler.setHaveLocationPermission(
+                requestCode == LocationHandler.MY_PERMISSIONS_REQUEST_ACCESS_LOCATION);
+    }
+
+    public void onLocationButtonClick(View v) {
+        locationHandler.setUpLocationGathering();
+    }
+
+    public void updateLocationTextView(String latestFormattedAddress) {
+        captionEditText.setText(latestFormattedAddress);
+    }
+
+    /**
+     * Called when the Post button on the Toolbar is tapped. Combines the data into a Post object
+     * and uploads it to Firebase.
+     */
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void onPhotoButtonClick() {
+    public void onPostButtonClick() {
+        String username = PreferenceManager.getDefaultSharedPreferences(this)
+                .getString(IntroActivity.USERNAME, IntroActivity.USERNAME_NOT_SET);
+        String caption = captionEditText.getText()
+                .toString();
+        String location = locationTextView.getText()
+                .toString();
+        String imageLink = photoDatabase.getLastImageFirebaseUrl();
+        //Log.v("Image", imageLink);
+        String date =
+                new SimpleDateFormat(DatabaseManager.PATTERN, Locale.getDefault())
+                        .format(Calendar.getInstance()
+                                        .getTime());
+        //Log.d("Location", location);
+        photoDatabase.createAndUploadPost(new Post(username, imageLink, caption, location, date));
+        goToFeedActivity();
+    }
+
+    private void goToFeedActivity() {
+        Intent goToFeedActivityIntent = new Intent(this, FeedActivity.class);
+        startActivity(goToFeedActivityIntent);
+    }
+
+    private void capturePhoto() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (intent.resolveActivity(getPackageManager()) != null) {
-            imageUri = databaseManager.createImageFile();
+            imageUri = photoDatabase.createImageFile();
             intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
             startActivityForResult(intent, DatabaseManager.CAPTURE_REQUEST_CODE);
         }
@@ -111,48 +163,11 @@ public class NewPostActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == DatabaseManager.CAPTURE_REQUEST_CODE && resultCode == RESULT_OK) {
-
-            ExifInterface exif = null;
-            int rotationInDegrees = 90;
             Picasso.with(this)
                     .load(imageUri)
                     .rotate(rotationInDegrees)
                     .into(imageView);
-            textView.setText("");
-            databaseManager.storeImageInFirebase(imageUri, imageView);
+            photoDatabase.storeImageInFirebase(imageUri);
         }
     }
-
-    public void onLocationButtonClick(View v) {
-        locationHandler.setUpLocationGathering();
-    }
-
-    public void updateLocationTextView(String latestFormattedAddress) {
-        captionEditText.setText(latestFormattedAddress);
-    }
-    /**
-     * Called when the Post button on the Toolbar is tapped. Combines the data into a Post object
-     * and uploads it to Firebase.
-     */
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    public void onPostButtonClick() {
-        String username = PreferenceManager.getDefaultSharedPreferences(this)
-                .getString
-                        (IntroActivity.USERNAME, IntroActivity.USERNAME_NOT_SET);
-        String caption = captionEditText.getText()
-                .toString();
-        String location = locationTextView.getText()
-                .toString();
-        String imageLink = databaseManager.getLastImageFirebaseUrl();
-        String date =
-                new SimpleDateFormat(DatabaseManager.PATTERN, Locale.getDefault()).format(Calendar
-                                                                                                  .getInstance()
-
-
-
-                                                                                                  .getTime());
-        Log.d("Location", location);
-        databaseManager.createAndUploadPost(new Post(username, imageLink, caption, location, date));
-    }
-
 }

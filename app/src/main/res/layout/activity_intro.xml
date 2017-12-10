@@ -45,15 +45,14 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="TextView"
+        android:text="@string/intro_text"
         android:textAlignment="center"
-        android:textColor="@android:color/white"
-        android:textSize="24sp"
+        android:textColor="#3C1642"
+        android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
-        tools:text="@string/intro_text"/>
+        app:layout_constraintTop_toBottomOf="@+id/imageView"/>
 
     <Button
         android:id="@+id/button"
@@ -64,11 +63,11 @@
         android:layout_marginTop="8dp"
         android:background="@color/colorPrimary"
         android:onClick="setUsername"
-        android:text="Button"
+        android:text="Get Started"
+        android:textAlignment="center"
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/username"
-        tools:text="Get Started"/>
+        app:layout_constraintTop_toBottomOf="@+id/username"/>
 
 </android.support.constraint.ConstraintLayout>

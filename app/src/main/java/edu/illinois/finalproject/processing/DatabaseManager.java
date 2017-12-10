@@ -1,6 +1,8 @@
 package edu.illinois.finalproject.processing;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -10,7 +12,6 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -25,6 +26,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,8 +35,7 @@ import java.util.List;
 
 import edu.illinois.finalproject.schemas.Post;
 import edu.illinois.finalproject.util.RecyclerViewAdapter;
-
-import static android.widget.Toast.LENGTH_SHORT;
+import id.zelory.compressor.Compressor;
 
 /**
  * Allows auto-syncing of the database, as well as operations to add posts.
@@ -55,6 +56,7 @@ public class DatabaseManager {
     private Uri imageUri;
     private String absoluteFilePath;
     private String lastImageFirebaseUrl;
+    private RecyclerViewAdapter recyclerViewAdapter;
 
     public DatabaseManager(Context context) {
         this.context = context;
@@ -68,16 +70,20 @@ public class DatabaseManager {
         parentReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                posts.add(dataSnapshot.getValue(Post.class));
+                if (recyclerViewAdapter == null) {
+                    recyclerViewAdapter = new RecyclerViewAdapter(context, posts);
+                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+                    recyclerView.setLayoutManager(linearLayoutManager);
+                    recyclerView.setAdapter(recyclerViewAdapter);
+
+                } else {
+                    recyclerViewAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                posts.add(dataSnapshot.getValue(Post.class));
-                RecyclerViewAdapter recyclerViewAdapter =
-                        new RecyclerViewAdapter(context, posts);
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
-                recyclerView.setLayoutManager(linearLayoutManager);
-                recyclerView.setAdapter(recyclerViewAdapter);
             }
 
             @Override
@@ -139,10 +145,23 @@ public class DatabaseManager {
     }
 
     /**
-     * Attempts to get a  Firebase Cloud Storage reference and store the returned file in a
+     * Compresses the file.
+     * Attempts to get a Firebase Cloud Storage reference.
+     * Stores the file in the cloud.
      */
-    public void storeImageInFirebase(Uri imageUri, ImageView imageView) {
+    public void storeImageInFirebase(Uri imageUri) {
         File file = new File(absoluteFilePath);
+        try {
+            File newFile = new Compressor(context).compressToFile(file);
+            FileOutputStream fileOutputStream = new FileOutputStream(absoluteFilePath);
+            Bitmap newFileBitmap = BitmapFactory.decodeFile(String.valueOf(newFile));
+            newFileBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fileOutputStream);
+            fileOutputStream.close();
+            Log.d("Compressor", "Successfully compressed image.");
+        } catch (IOException e) {
+            Log.d("Compressor", "Compressing the file didn't work.");
+            e.printStackTrace();
+        }
         //Uri imageUri = Uri.fromFile(file);
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
         StorageReference rootStorageReference = firebaseStorage.getReference();
@@ -156,12 +175,13 @@ public class DatabaseManager {
                                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
                                 lastImageFirebaseUrl = downloadUrl.toString();
                                 Log.v(DOWNLOAD_URL, String.valueOf(downloadUrl));
-                                String outputString = String.format("Image was uploaded with URL:" +
-                                                                            " %s", downloadUrl
-                                                                            .toString());
-                                Toast.makeText(imageView.getContext(), outputString,
-                                               LENGTH_SHORT)
-                                        .show();
+                                //String outputString = String.format("Image was uploaded with
+                                // URL:" +
+                                //                                            " %s", downloadUrl
+                                //                                            .toString());
+                                //Toast.makeText(imageView.getContext(), outputString,
+                                //               LENGTH_SHORT)
+                                //        .show();
                             }
                         })
                 .addOnFailureListener(new OnFailureListener() {
@@ -169,9 +189,10 @@ public class DatabaseManager {
                     public void onFailure(
                             @NonNull
                                     Exception e) {
-                        Toast.makeText(imageView.getContext(), "Image did not upload to Firebase.",
-                                       LENGTH_SHORT)
-                                .show();
+                        //Toast.makeText(imageView.getContext(), "Image did not upload to
+                        // Firebase.",
+                        //               LENGTH_SHORT)
+                        //        .show();
                     }
                 });
     }

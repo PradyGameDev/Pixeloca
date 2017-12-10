@@ -1,61 +1,48 @@
 package edu.illinois.finalproject.processing;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.TextView;
 
+import edu.illinois.finalproject.activities.NewPostActivity;
+
 public class LocationHandler {
-    private static final int MY_PERMISSIONS_REQUEST_ACCESS_LOCATION = 0;
+    public static final int MY_PERMISSIONS_REQUEST_ACCESS_LOCATION = 1;
+
     private TextView locationTextView;
     private Context context;
     private Location lastKnownLocation;
     private GeocodingManager geocodingManager;
+    private NewPostActivity activity;
+    private boolean haveLocationPermission;
 
-    public LocationHandler(TextView locationTextView, Context context) {
+    public LocationHandler(TextView locationTextView, NewPostActivity activity) {
         this.locationTextView = locationTextView;
-        this.context = context;
+        this.context = activity;
+        this.activity = activity;
+
+        this.setHaveLocationPermission(
+                activity.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) ==
+                        PackageManager.PERMISSION_GRANTED);
+        Log.d("ASDF", "" + haveLocationPermission);
     }
 
+    public void setHaveLocationPermission(boolean haveLocationPermission) {
+        this.haveLocationPermission = haveLocationPermission;
+    }
+
+    @SuppressWarnings({"MissingPermission"})
     public void setUpLocationGathering() {
-        if (ContextCompat.checkSelfPermission(context,
-                                              Manifest.permission.READ_CONTACTS)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) context,
-                                                                    Manifest.permission
-                                                                            .ACCESS_FINE_LOCATION)) {
-                ActivityCompat.requestPermissions((Activity) context,
-                                                  new String[]{Manifest
-                                                          .permission_group.LOCATION},
-                                                  MY_PERMISSIONS_REQUEST_ACCESS_LOCATION);
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-            } else {
-
-                // No explanation needed, we can request the permission.
-
-                ActivityCompat.requestPermissions((Activity) context,
-                                                  new String[]{Manifest
-                                                          .permission_group.LOCATION},
-                                                  MY_PERMISSIONS_REQUEST_ACCESS_LOCATION);
-
-                // MY_PERMISSIONS_REQUEST_ACCESS_LOCATION is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
+        if (!haveLocationPermission) {
+            return;
         }
+
         // Acquire a reference to the system Location Manager
         LocationManager locationManager =
                 (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
@@ -78,24 +65,16 @@ public class LocationHandler {
             }
         };
 
-// Register the listener with the Location Manager to receive location updates
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context,
-                                                                                        Manifest.permission.ACCESS_COARSE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions((Activity) context,
-                                              new String[]{Manifest
-                                                      .permission_group.LOCATION},
-                                              MY_PERMISSIONS_REQUEST_ACCESS_LOCATION);
-        }
+        // Register the listener with the Location Manager to receive location updates
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0,
                                                locationListener);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,
                                                locationListener);
-        geocodingManager = new GeocodingManager(
-                locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER),
-                locationTextView);
-        locationTextView.setText(geocodingManager.getLastKnownFormattedAddress());
+        if (lastKnownLocation != null) {
+            geocodingManager = new GeocodingManager(lastKnownLocation, locationTextView);
+            Log.v("LocationLastKnown", geocodingManager.getLastKnownFormattedAddress());
+            locationTextView.setText(geocodingManager.getLastKnownFormattedAddress());
+        }
     }
 
     /**
@@ -103,33 +82,22 @@ public class LocationHandler {
      *
      * @param locationManager The manager in the current context.
      */
+    @SuppressWarnings({"MissingPermission"})
     private void makeUseOfNewLocation(LocationManager locationManager) {
         Log.v("Location", "Debug");
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context,
-                                                                                        Manifest.permission.ACCESS_COARSE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions((Activity) context,
-                                              new String[]{Manifest
-                                                      .permission_group.LOCATION},
-                                              MY_PERMISSIONS_REQUEST_ACCESS_LOCATION);
+        if (!haveLocationPermission) {
+            return;
         }
-        locationTextView.setText(
-                (CharSequence) locationManager.getLastKnownLocation(
-                        LocationManager.NETWORK_PROVIDER));
 
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context,
-                                                                                        Manifest.permission.ACCESS_COARSE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions((Activity) context,
-                                              new String[]{Manifest
-                                                      .permission_group.LOCATION},
-                                              MY_PERMISSIONS_REQUEST_ACCESS_LOCATION);
+        Log.d("Location", "Doing things");
+        try {
+            lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            geocodingManager = new GeocodingManager(lastKnownLocation, locationTextView);
+            Log.v("LocationLastKnown", geocodingManager.getLastKnownFormattedAddress());
+            locationTextView.setText(geocodingManager.getLastKnownFormattedAddress());
+        } catch (Exception e) {
+            Log.d("Location", e.toString());
+            activity.askForLocationPermissions();
         }
-        lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        geocodingManager = new GeocodingManager(lastKnownLocation, locationTextView);
-        Log.v("LocationLastKnown", geocodingManager.getLastKnownFormattedAddress());
-        locationTextView.setText(geocodingManager.getLastKnownFormattedAddress());
     }
 }

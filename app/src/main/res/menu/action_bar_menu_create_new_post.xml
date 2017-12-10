@@ -3,14 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_capture_photo"
-        android:checkable="false"
-        android:checked="false"
-        android:icon="@drawable/camera"
-        android:title="@string/take_photo"
-        android:visible="true"
-        app:showAsAction="ifRoom"/>
-    <item
         android:id="@+id/action_upload_post"
         android:checkable="false"
         android:checked="false"

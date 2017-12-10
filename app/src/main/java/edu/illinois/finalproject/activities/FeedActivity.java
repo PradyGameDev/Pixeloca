@@ -32,12 +32,14 @@ import static edu.illinois.finalproject.activities.IntroActivity.USERNAME_NOT_SE
 
 public class FeedActivity extends AppCompatActivity {
 
+    public static final String DETAIL_VIEW_OPEN = "Detail View Opened";
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
     @BindView(R.id.pull_to_refresh_listview)
     PullToRefreshListView pullToRefreshListView;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +54,7 @@ public class FeedActivity extends AppCompatActivity {
                     }
                 });
         welcomeUser();
-        DatabaseManager dbManager = new DatabaseManager(this, recyclerView);
+        DatabaseManager feedDatabase = new DatabaseManager(this, recyclerView);
     }
 
     @Override
@@ -76,7 +78,7 @@ public class FeedActivity extends AppCompatActivity {
             case R.id.action_create_new_post: {
                 //Toast.makeText(this, "New post created.", Toast.LENGTH_SHORT)
                 //        .show();
-                openNewPostActivity();
+                openNextActivity();
                 //Intent goBackIntent = new Intent(this, FeedActivity.class);
                 //startActivity(goBackIntent);
                 return true;
@@ -92,9 +94,9 @@ public class FeedActivity extends AppCompatActivity {
         }
     }
 
-    private void openNewPostActivity() {
-        Intent newPostActivityIntent = new Intent(this, NewPostActivity.class);
-        startActivity(newPostActivityIntent);
+    private void openNextActivity() {
+        Intent openNextActivityIntent = new Intent(this, NewPostActivity.class);
+        startActivity(openNextActivityIntent);
     }
 
     class ListItemOnClickListener implements View.OnClickListener {

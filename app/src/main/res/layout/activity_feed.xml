@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg2"
+    android:background='#5863F8'
     tools:context="edu.illinois.finalproject.activities.FeedActivity">
     <!--
       The PullToRefreshListView replaces a standard ListView widget.
@@ -25,7 +25,6 @@
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         android:background="@android:drawable/screen_background_light_transparent"
-        android:padding="@dimen/margins"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"

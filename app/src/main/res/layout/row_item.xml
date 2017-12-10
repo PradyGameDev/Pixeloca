@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:elevation="50dp"
         android:orientation="vertical"
-        app:cardBackgroundColor="@color/cardview_light_background">
+        app:cardBackgroundColor="@android:drawable/screen_background_light_transparent">
 
         <LinearLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
@@ -31,7 +31,7 @@
                 android:layout_height="75dp"
                 android:layout_marginEnd="5dp"
                 android:contentDescription="@string/post_thumbnail"
-                app:srcCompat="@android:drawable/picture_frame"
+                app:srcCompat="@android:drawable/sym_def_app_icon"
                 tools:layout_editor_absoluteX="16dp"
                 tools:layout_editor_absoluteY="18dp"/>
 
@@ -46,6 +46,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/caption"
+                    android:textColor="#23001E"
                     android:textSize="18sp"
                     android:textStyle="bold"/>
 
@@ -60,14 +61,18 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/username"
-                        android:textSize="14sp"/>
+                        android:textColor="#23001E"
+                        android:textSize="14sp"
+                        android:textStyle="bold"/>
 
                     <TextView
-                        android:id="@+id/post_location"
+                        android:id="@+id/display_location"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/location"
-                        android:textSize="14sp"/>
+                        android:textColor="#23001E"
+                        android:textSize="14sp"
+                        android:textStyle="bold"/>
                 </LinearLayout>
             </LinearLayout>
 
