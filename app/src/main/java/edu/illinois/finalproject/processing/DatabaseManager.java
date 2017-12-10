@@ -58,7 +58,7 @@ public class DatabaseManager {
     private Uri imageUri;
     private String absoluteFilePath;
     private String lastImageFirebaseUrl;
-    private RecyclerViewAdapter recyclerViewAdapter;
+    private RecyclerViewAdapter<RecyclerView.ViewHolder> recyclerViewAdapter;
 
     public DatabaseManager(Context context) {
         this.context = context;
@@ -79,7 +79,8 @@ public class DatabaseManager {
                 posts.clear();
                 posts.addAll(postSet);
                 if (recyclerViewAdapter == null) {
-                    recyclerViewAdapter = new RecyclerViewAdapter(context, posts);
+                    recyclerViewAdapter =
+                            new RecyclerViewAdapter<RecyclerView.ViewHolder>(context, posts);
                     LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
                     recyclerView.setLayoutManager(linearLayoutManager);
                     recyclerView.setAdapter(recyclerViewAdapter);

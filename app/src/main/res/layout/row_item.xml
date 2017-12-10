@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    >
+    android:layout_marginTop="20dp">
 
     <android.support.v7.widget.CardView
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -14,7 +14,10 @@
         android:layout_height="wrap_content"
         android:elevation="50dp"
         android:orientation="vertical"
-        app:cardBackgroundColor="@android:drawable/screen_background_light_transparent">
+        android:requiresFadingEdge="vertical"
+        app:cardBackgroundColor="@android:drawable/screen_background_light_transparent"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="50dp">
 
         <LinearLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
@@ -22,18 +25,7 @@
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="@dimen/padding">
-
-            <ImageView
-                android:id="@+id/post_thumbnail"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:layout_marginEnd="5dp"
-                android:contentDescription="@string/post_thumbnail"
-                app:srcCompat="@android:drawable/sym_def_app_icon"
-                tools:layout_editor_absoluteX="16dp"
-                tools:layout_editor_absoluteY="18dp"/>
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -41,19 +33,11 @@
                 android:orientation="vertical"
                 android:weightSum="3">
 
-                <TextView
-                    android:id="@+id/post_caption"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/caption"
-                    android:textColor="#23001E"
-                    android:textSize="18sp"
-                    android:textStyle="bold"/>
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
+                    android:padding="10dp"
                     android:weightSum="1">
 
                     <TextView
@@ -62,7 +46,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/username"
                         android:textColor="#23001E"
-                        android:textSize="14sp"
+                        android:textSize="16sp"
                         android:textStyle="bold"/>
 
                     <TextView
@@ -70,11 +54,33 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/location"
+                        android:textAlignment="viewStart"
                         android:textColor="#23001E"
                         android:textSize="14sp"
-                        android:textStyle="bold"/>
+                        />
                 </LinearLayout>
             </LinearLayout>
+
+            <ImageView
+                android:id="@+id/post_thumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="0dp"
+                android:contentDescription="@string/post_thumbnail"
+                app:srcCompat="@android:drawable/sym_def_app_icon"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="18dp"/>
+
+            <TextView
+                android:id="@+id/post_caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="@string/caption"
+                android:textAlignment="viewStart"
+                android:textColor="#23001E"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
 
         </LinearLayout>
     </android.support.v7.widget.CardView>

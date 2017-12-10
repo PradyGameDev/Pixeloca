@@ -6,7 +6,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background='#5863F8'
     tools:context="edu.illinois.finalproject.activities.FeedActivity">
     <!--
       The PullToRefreshListView replaces a standard ListView widget.
@@ -21,9 +20,6 @@
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_margin="@dimen/margins"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
         android:background="@android:drawable/screen_background_light_transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

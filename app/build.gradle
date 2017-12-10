@@ -50,7 +50,9 @@ dependencies {
     compile 'com.firebaseui:firebase-ui-database:0.4.1'
     //Image compressor
     compile 'id.zelory:compressor:2.1.0'
-    implementation 'com.google.android.gms:play-services-maps:11.6.2'
+    implementation 'com.google.android.gms:play-services-maps:11.0.4'
+    //Material Design View
+    compile 'com.blunderer:materialdesignlibrary:1.1.1'
 }
 
 

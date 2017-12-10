@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 
 import com.squareup.picasso.Picasso;
 
@@ -19,7 +21,10 @@ import edu.illinois.finalproject.R;
 import edu.illinois.finalproject.activities.PostDetailViewActivity;
 import edu.illinois.finalproject.schemas.Post;
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<PostViewHolder> {
+public class RecyclerViewAdapter<P extends RecyclerView.ViewHolder>
+        extends RecyclerView.Adapter<PostViewHolder> {
+    public static final int DESIRED_HEIGHT_OF_POST = 400;
+    public static final String DETAIL_VIEW_OPEN = "OPEN_DETAILED_VIEW";
     //This Map is used to figure out which row item has been clicked on, so that the detail view
     // is able to display the right information
     Map<String, Integer> postMap = new HashMap<>();
@@ -45,6 +50,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<PostViewHolder> {
     @Override
     public void onBindViewHolder(PostViewHolder holder, int position) {
         try {
+            WindowManager windowManager = (WindowManager) context.getSystemService(Context
+                                                                                           .WINDOW_SERVICE);
+            Display display = windowManager.getDefaultDisplay();
             Log.v("Image URI", posts.get(position)
                     .getImageUri());
             Log.v("Caption", posts.get(position)
@@ -52,6 +60,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<PostViewHolder> {
             Picasso.with(context)
                     .load(Uri.parse(posts.get(position)
                                             .getImageUri()))
+                    .resize(display.getWidth(), (int) (context.getResources()
+                            .getDisplayMetrics()
+                            .density * DESIRED_HEIGHT_OF_POST))
+                    .centerCrop()
                     .into(holder.postThumbnail);
             holder.postCaption.setText(posts.get(position)
                                                .getCaption());
@@ -60,9 +72,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<PostViewHolder> {
             holder.postLocation.setText(posts.get(position)
                                                 .getLocation());
             holder.itemView.setOnClickListener(view -> {
+                Log.v("PostSent", posts.get(position)
+                        .toString());
                 Intent detailViewIntent = new Intent(context, PostDetailViewActivity.class);
                 detailViewIntent
-                        .putExtra(Post.class.getSimpleName(), posts
+                        .putExtra(DETAIL_VIEW_OPEN, posts
                                 .get(position));
                 view.getContext()
                         .startActivity(detailViewIntent);
