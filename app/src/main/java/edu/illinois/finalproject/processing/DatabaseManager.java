@@ -32,6 +32,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import edu.illinois.finalproject.schemas.Post;
 import edu.illinois.finalproject.util.RecyclerViewAdapter;
@@ -71,6 +73,11 @@ public class DatabaseManager {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 posts.add(dataSnapshot.getValue(Post.class));
+                //Remove duplicate items from the ArrayList
+                Set<Post> postSet = new TreeSet<>();
+                postSet.addAll(posts);
+                posts.clear();
+                posts.addAll(postSet);
                 if (recyclerViewAdapter == null) {
                     recyclerViewAdapter = new RecyclerViewAdapter(context, posts);
                     LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
@@ -146,7 +153,7 @@ public class DatabaseManager {
 
     /**
      * Compresses the file.
-     * Attempts to get a Firebase Cloud Storage reference.
+     * Gets a reference to Firebase Cloud Storage.
      * Stores the file in the cloud.
      */
     public void storeImageInFirebase(Uri imageUri) {

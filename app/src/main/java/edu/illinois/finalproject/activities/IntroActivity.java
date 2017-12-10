@@ -2,9 +2,9 @@ package edu.illinois.finalproject.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -61,7 +61,6 @@ public class IntroActivity extends AppCompatActivity {
                     .show();
         }
     }
-    //TODO:Implement username validation
 
     /**
      * Checks if a username is valid. Valid usernames cannot contain empty strings, and must be
@@ -71,6 +70,10 @@ public class IntroActivity extends AppCompatActivity {
      * @return true if the username is valid, else false.
      */
     private boolean isValidUsername(String username) {
-        return true;
+        boolean isValidUsername = true;
+        if (username.isEmpty() || username.length() > 15) {
+            isValidUsername = false;
+        }
+        return isValidUsername;
     }
 }
