@@ -10,4 +10,7 @@
     <string name="button">Button</string>
     <string name="upload_post">Post</string>
     <string name="take_photo">Take Photo</string>
+    <string name="comment">Comment</string>
+    <string name="name">Name</string>
+    <string name="date_and_time">Date and time</string>
 </resources>

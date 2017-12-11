@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Post implements Parcelable, Comparable<Post> {
@@ -34,6 +35,9 @@ public class Post implements Parcelable, Comparable<Post> {
         this.location = location;
         this.internalDate = internalDate;
         this.userDisplayDate = userDisplayDate;
+        commentList = new ArrayList<>();
+        commentList.add(new Comment("Poster", "Comment text Lorem ipsum doler sit amet...",
+                                    "simply simply", "something something"));
     }
 
     public Post() {

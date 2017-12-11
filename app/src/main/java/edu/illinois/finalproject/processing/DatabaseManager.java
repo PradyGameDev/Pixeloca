@@ -73,26 +73,12 @@ public class DatabaseManager {
         parentReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                posts.add(dataSnapshot.getValue(Post.class));
-                //Remove duplicate items from the ArrayList
-                Set<Post> postSet = new TreeSet<>();
-                postSet.addAll(posts);
-                posts.clear();
-                posts.addAll(postSet);
-                if (feedRecyclerViewAdapter == null) {
-                    feedRecyclerViewAdapter =
-                            new FeedRecyclerViewAdapter<RecyclerView.ViewHolder>(context, posts);
-                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
-                    recyclerView.setLayoutManager(linearLayoutManager);
-                    recyclerView.setAdapter(feedRecyclerViewAdapter);
-
-                } else {
-                    feedRecyclerViewAdapter.notifyDataSetChanged();
-                }
+                updateFeedAfterNewData(dataSnapshot, context, recyclerView);
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                updateFeedAfterNewData(dataSnapshot, context, recyclerView);
             }
 
             @Override
@@ -117,6 +103,42 @@ public class DatabaseManager {
         return posts;
     }
 
+    /**
+     * Called when the post has been modified(e.g. through a comment add) or when a post has been
+     * added.
+     * Retrieves the entire "posts/" reference.
+     * Next, it orders the posts and removes duplicates.
+     * Checks if the feed is empty.
+     * <p>If the feed is empty, it does the following.</p>
+     * <p>It binds everything to row items in the RecyclerView</p>
+     * <p>
+     * <p>If the feed simply has to be updated, it simply notifies the
+     * RecyclerViewAdapter that the data set of existing posts has been modified.</p>
+     *
+     * @param dataSnapshot A snapshot of the parent post reference
+     * @param context      The FeedActivity context
+     * @param recyclerView The feed RecyclerView
+     */
+    private void updateFeedAfterNewData(DataSnapshot dataSnapshot, Context context,
+                                        RecyclerView recyclerView) {
+        posts.add(dataSnapshot.getValue(Post.class));
+        //Remove duplicate items from the ArrayList
+        Set<Post> postSet = new TreeSet<>();
+        postSet.addAll(posts);
+        posts.clear();
+        posts.addAll(postSet);
+        if (feedRecyclerViewAdapter == null) {
+            feedRecyclerViewAdapter =
+                    new FeedRecyclerViewAdapter<RecyclerView.ViewHolder>(context, posts);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+            recyclerView.setLayoutManager(linearLayoutManager);
+            recyclerView.setAdapter(feedRecyclerViewAdapter);
+
+        } else {
+            feedRecyclerViewAdapter.notifyDataSetChanged();
+        }
+    }
+
     public String getLastImageFirebaseUrl() {
         return lastImageFirebaseUrl;
     }
@@ -129,6 +151,11 @@ public class DatabaseManager {
                 .show();
     }
 
+    /**
+     * Creates a new file with a name generated using the current date and time.
+     *
+     * @return A android.net.Uri to the new file.
+     */
     public Uri createImageFile() {
         // Create an image file name
         String timeStamp = new SimpleDateFormat(INTERNAL_DATE_PATTERN).format(new Date());
@@ -204,5 +231,17 @@ public class DatabaseManager {
                         //        .show();
                     }
                 });
+    }
+
+    /**
+     * If a post has been modified, it overwrites the original post with the modified contents.
+     *
+     * @param tappedPost The post with modified content.
+     */
+    public void updatePost(Post tappedPost) {
+        //Gets reference of last added post
+        String referencePath = String.format("posts/%s", tappedPost.getInternalDate());
+        DatabaseReference toBeUpdatedReference = database.getReference(referencePath);
+        toBeUpdatedReference.setValue(tappedPost);
     }
 }

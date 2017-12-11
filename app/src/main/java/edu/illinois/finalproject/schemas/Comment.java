@@ -28,6 +28,9 @@ public class Comment implements Parcelable, Comparable<Comment> {
         this.displayDate = displayDate;
     }
 
+    public Comment() {
+    }
+
     protected Comment(Parcel in) {
         this.name = in.readString();
         this.text = in.readString();
@@ -65,6 +68,16 @@ public class Comment implements Parcelable, Comparable<Comment> {
 
     public void setDisplayDate(String displayDate) {
         this.displayDate = displayDate;
+    }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "name='" + name + '\'' +
+                ", text='" + text + '\'' +
+                ", internalDate='" + internalDate + '\'' +
+                ", displayDate='" + displayDate + '\'' +
+                '}';
     }
 
     @Override

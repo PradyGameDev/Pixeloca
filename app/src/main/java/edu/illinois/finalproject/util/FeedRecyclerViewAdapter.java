@@ -18,13 +18,13 @@ import java.util.List;
 import java.util.Map;
 
 import edu.illinois.finalproject.R;
-import edu.illinois.finalproject.activities.PostDetailViewActivity;
+import edu.illinois.finalproject.activities.CommentViewActivity;
+import edu.illinois.finalproject.activities.FeedActivity;
 import edu.illinois.finalproject.schemas.Post;
 
 public class FeedRecyclerViewAdapter<P extends RecyclerView.ViewHolder>
         extends RecyclerView.Adapter<PostViewHolder> {
     public static final int DESIRED_HEIGHT_OF_POST = 400;
-    public static final String DETAIL_VIEW_OPEN = "OPEN_DETAILED_VIEW";
     //This Map is used to figure out which row item has been clicked on, so that the detail view
     // is able to display the right information
     Map<String, Integer> postMap = new HashMap<>();
@@ -76,9 +76,9 @@ public class FeedRecyclerViewAdapter<P extends RecyclerView.ViewHolder>
             holder.postCommentButton.setOnClickListener(view -> {
                 Log.v("PostSent", posts.get(position)
                         .toString());
-                Intent detailViewIntent = new Intent(context, PostDetailViewActivity.class);
+                Intent detailViewIntent = new Intent(context, CommentViewActivity.class);
                 detailViewIntent
-                        .putExtra(DETAIL_VIEW_OPEN, posts
+                        .putExtra(FeedActivity.COMMENT_VIEW_OPEN, posts
                                 .get(position));
                 view.getContext()
                         .startActivity(detailViewIntent);
