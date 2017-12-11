@@ -24,7 +24,7 @@ import edu.illinois.finalproject.schemas.Post;
 
 public class FeedRecyclerViewAdapter<P extends RecyclerView.ViewHolder>
         extends RecyclerView.Adapter<PostViewHolder> implements Parcelable {
-    public static final int DESIRED_HEIGHT_OF_POST = 400;
+    public static final int DESIRED_HEIGHT_OF_POST = 350;
     public static final String FEED_RECYCLER_VIEW = "Feed RecyclerViewAdapter being sent";
     public static final Parcelable.Creator<FeedRecyclerViewAdapter> CREATOR =
             new Parcelable.Creator<FeedRecyclerViewAdapter>() {
@@ -45,8 +45,11 @@ public class FeedRecyclerViewAdapter<P extends RecyclerView.ViewHolder>
         this.context = context;
         this.posts = posts;
     }
-
     protected FeedRecyclerViewAdapter(Parcel in) {
+    }
+
+    public void updateFeed() {
+        this.notifyDataSetChanged();
     }
 
     /**
@@ -98,6 +101,11 @@ public class FeedRecyclerViewAdapter<P extends RecyclerView.ViewHolder>
                 view.getContext()
                         .startActivity(detailViewIntent);
             });
+            Picasso.with(context)
+                    .load(Uri.parse(posts.get(position)
+                                            .getUserPhotoUri()))
+                    .into
+                            (holder.userImageView);
         } catch (Exception e) {
             Log.d("ASDF", "Something wrong with post.");
         }

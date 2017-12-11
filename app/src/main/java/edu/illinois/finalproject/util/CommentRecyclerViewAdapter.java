@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 import edu.illinois.finalproject.R;
@@ -36,6 +38,10 @@ public class CommentRecyclerViewAdapter<P extends RecyclerView.ViewHolder>
                                            .getText());
         holder.commentDate.setText(commentList.get(position)
                                            .getDisplayDate());
+        Picasso.with(context)
+                .load(commentList.get(position)
+                              .getUserPhotoUri())
+                .into(holder.commenterPhoto);
     }
 
     @Override

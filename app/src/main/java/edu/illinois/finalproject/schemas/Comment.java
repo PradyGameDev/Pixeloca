@@ -20,12 +20,15 @@ public class Comment implements Parcelable, Comparable<Comment> {
     private String text;
     private String internalDate;
     private String displayDate;
+    private String userPhotoUri;
 
-    public Comment(String name, String text, String internalDate, String displayDate) {
+    public Comment(String name, String text, String internalDate, String displayDate,
+                   String userPhotoUri) {
         this.name = name;
         this.text = text;
         this.internalDate = internalDate;
         this.displayDate = displayDate;
+        this.userPhotoUri = userPhotoUri;
     }
 
     public Comment() {
@@ -36,6 +39,7 @@ public class Comment implements Parcelable, Comparable<Comment> {
         this.text = in.readString();
         this.internalDate = in.readString();
         this.displayDate = in.readString();
+        this.userPhotoUri = in.readString();
     }
 
     public String getName() {
@@ -70,6 +74,14 @@ public class Comment implements Parcelable, Comparable<Comment> {
         this.displayDate = displayDate;
     }
 
+    public String getUserPhotoUri() {
+        return userPhotoUri;
+    }
+
+    public void setUserPhotoUri(String userPhotoUri) {
+        this.userPhotoUri = userPhotoUri;
+    }
+
     @Override
     public String toString() {
         return "Comment{" +
@@ -77,6 +89,7 @@ public class Comment implements Parcelable, Comparable<Comment> {
                 ", text='" + text + '\'' +
                 ", internalDate='" + internalDate + '\'' +
                 ", displayDate='" + displayDate + '\'' +
+                ", userPhotoUri='" + userPhotoUri + '\'' +
                 '}';
     }
 
@@ -91,6 +104,7 @@ public class Comment implements Parcelable, Comparable<Comment> {
         dest.writeString(this.text);
         dest.writeString(this.internalDate);
         dest.writeString(this.displayDate);
+        dest.writeString(this.userPhotoUri);
     }
 
     @Override

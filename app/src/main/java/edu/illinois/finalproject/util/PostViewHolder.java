@@ -19,6 +19,7 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
     TextView postLocation;
     TextView postDate;
     Button postCommentButton;
+    ImageView userImageView;
     public PostViewHolder(View itemView) {
         super(itemView);
         postThumbnail = (ImageView) itemView.findViewById(R.id.post_thumbnail);
@@ -27,6 +28,7 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         postLocation = (TextView) itemView.findViewById(R.id.display_location);
         postDate = (TextView) itemView.findViewById(R.id.post_date);
         postCommentButton = (Button) itemView.findViewById(R.id.post_comments);
+        userImageView = (ImageView) itemView.findViewById(R.id.userImageView);
     }
 
     @Override

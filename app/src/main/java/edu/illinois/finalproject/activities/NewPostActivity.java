@@ -2,6 +2,7 @@ package edu.illinois.finalproject.activities;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -121,7 +122,8 @@ public class NewPostActivity extends AppCompatActivity {
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void onPostButtonClick() {
-        String username = PreferenceManager.getDefaultSharedPreferences(this)
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String username = sharedPreferences
                 .getString(IntroActivity.USERNAME, IntroActivity.USERNAME_NOT_SET);
         String caption = captionEditText.getText()
                 .toString();
@@ -136,9 +138,12 @@ public class NewPostActivity extends AppCompatActivity {
                         .format(time);
         String displayDate = new SimpleDateFormat(DatabaseManager.USER_DISPLAY_DATE_PATTERN,
                                                   Locale.getDefault()).format(time);
+        String userPhotoUri = sharedPreferences.getString(IntroActivity.USER_PHOTO_URI,
+                                                          IntroActivity.PHOTO_NOT_SET);
         //Log.d("Location", location);
+        //Creates a Post instance and passes it to an upload method in DatabaseManager
         photoDatabase.createAndUploadPost(new Post(username, imageLink, caption, location,
-                                                   internalDate, displayDate));
+                                                   internalDate, displayDate, userPhotoUri));
         goToFeedActivity();
     }
 

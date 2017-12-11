@@ -37,6 +37,7 @@ public class FeedActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     @BindView(R.id.pull_to_refresh_listview)
     PullToRefreshListView pullToRefreshListView;
+    private DatabaseManager feedDatabase;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
 
@@ -54,7 +55,15 @@ public class FeedActivity extends AppCompatActivity {
                     }
                 });
         welcomeUser();
-        DatabaseManager feedDatabase = new DatabaseManager(this, recyclerView);
+        feedDatabase = new DatabaseManager(this, recyclerView);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (feedDatabase != null) {
+            feedDatabase.updateFeed();
+        }
     }
 
     @Override
@@ -86,6 +95,8 @@ public class FeedActivity extends AppCompatActivity {
             case R.id.action_settings: {
                 Toast.makeText(this, "Opened settings.", Toast.LENGTH_SHORT)
                         .show();
+                Intent settingsActivityIntent = new Intent(this, SettingsActivity.class);
+                startActivity(settingsActivityIntent);
                 return true;
             }
             default: {

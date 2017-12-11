@@ -72,7 +72,10 @@ public class CommentViewActivity extends AppCompatActivity {
                 .format(time);
         String displayDate = new SimpleDateFormat(DatabaseManager.USER_DISPLAY_DATE_PATTERN)
                 .format(time);
-        Comment newComment = new Comment(commenterName, commentText, internalDate, displayDate);
+        String userPhotoUri = sharedPreferences.getString(IntroActivity.USER_PHOTO_URI,
+                                                          IntroActivity.PHOTO_NOT_SET);
+        Comment newComment =
+                new Comment(commenterName, commentText, internalDate, displayDate, userPhotoUri);
         commentList.add(newComment);
         commentRecyclerViewAdapter.notifyDataSetChanged();
         DatabaseManager databaseManager = new DatabaseManager(this);

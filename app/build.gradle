@@ -24,9 +24,9 @@ android {
 }
 
 dependencies {
-    implementation 'com.google.firebase:firebase-database:11.0.4'
-    implementation 'com.google.firebase:firebase-storage:11.0.4'
-    implementation 'com.google.firebase:firebase-auth:11.0.4'
+    implementation 'com.google.firebase:firebase-database:11.6.0'
+    implementation 'com.google.firebase:firebase-storage:11.6.0'
+    implementation 'com.google.firebase:firebase-auth:11.6.0'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -50,15 +50,14 @@ dependencies {
     compile 'com.firebaseui:firebase-ui-database:0.4.1'
     //Image compressor
     compile 'id.zelory:compressor:2.1.0'
-    implementation 'com.google.android.gms:play-services-maps:11.0.4'
+    implementation 'com.google.android.gms:play-services-maps:11.6.0'
     //Material Design View
     compile 'com.blunderer:materialdesignlibrary:1.1.1'
+    //Google Play Services
+    compile 'com.google.android.gms:play-services-auth:11.6.0'
+    compile 'com.google.gms:google-services:3.1.2'
+    //Firebase Auth
+    //compile 'com.firebaseui:firebase-ui-auth:3.1.0'
+
 }
-
-
-
-
-
-
-
 apply plugin: 'com.google.gms.google-services'

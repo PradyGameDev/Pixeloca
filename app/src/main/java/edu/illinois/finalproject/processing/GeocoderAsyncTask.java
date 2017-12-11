@@ -16,7 +16,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 
-import edu.illinois.finalproject.schemas.GoogleMapsApiKey;
+import edu.illinois.finalproject.schemas.APIKeys;
 import edu.illinois.finalproject.schemas.ReverseGeocoderResponse;
 
 public class GeocoderAsyncTask extends AsyncTask<String, Location, ReverseGeocoderResponse> {
@@ -41,7 +41,7 @@ public class GeocoderAsyncTask extends AsyncTask<String, Location, ReverseGeocod
                     .buildUpon()
                     .appendQueryParameter("latlng", String.format("%s,%s", location.getLatitude()
                             , location.getLongitude()))
-                    .appendQueryParameter("API_KEY", GoogleMapsApiKey.API_KEY)
+                    .appendQueryParameter("API_KEY", APIKeys.API_KEY)
                     .build();
             Log.v("URL", googleMapsGeocoderUrl.toString());
             URLConnection connection = new URL(googleMapsGeocoderUrl.toString()).openConnection();

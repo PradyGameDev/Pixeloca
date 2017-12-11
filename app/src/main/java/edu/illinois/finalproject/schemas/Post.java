@@ -25,19 +25,21 @@ public class Post implements Parcelable, Comparable<Post> {
     private String location;
     private String internalDate;
     private String userDisplayDate;
+    private String userPhotoUri;
     private List<Comment> commentList;
 
     public Post(String username, String imageUri, String caption, String location, String
-            internalDate, String userDisplayDate) {
+            internalDate, String userDisplayDate, String userPhotoUri) {
         this.username = username;
         this.imageUri = imageUri;
         this.caption = caption;
         this.location = location;
         this.internalDate = internalDate;
         this.userDisplayDate = userDisplayDate;
+        this.userPhotoUri = userPhotoUri;
         commentList = new ArrayList<>();
-        commentList.add(new Comment("Poster", "Comment text Lorem ipsum doler sit amet...",
-                                    "simply simply", "something something"));
+        commentList.add(new Comment(username, caption, internalDate, userDisplayDate,
+                                    userPhotoUri));
     }
 
     public Post() {
@@ -51,6 +53,7 @@ public class Post implements Parcelable, Comparable<Post> {
         this.location = in.readString();
         this.internalDate = in.readString();
         this.userDisplayDate = in.readString();
+        this.userPhotoUri = in.readString();
         this.commentList = in.createTypedArrayList(Comment.CREATOR);
     }
 
@@ -110,6 +113,14 @@ public class Post implements Parcelable, Comparable<Post> {
         this.userDisplayDate = userDisplayDate;
     }
 
+    public String getUserPhotoUri() {
+        return userPhotoUri;
+    }
+
+    public void setUserPhotoUri(String userPhotoUri) {
+        this.userPhotoUri = userPhotoUri;
+    }
+
     @Override
     public String toString() {
         return "Post{" +
@@ -119,6 +130,7 @@ public class Post implements Parcelable, Comparable<Post> {
                 ", location='" + location + '\'' +
                 ", internalDate='" + internalDate + '\'' +
                 ", userDisplayDate='" + userDisplayDate + '\'' +
+                ", userPhotoUri='" + userPhotoUri + '\'' +
                 ", commentList=" + commentList +
                 '}';
     }
@@ -160,6 +172,7 @@ public class Post implements Parcelable, Comparable<Post> {
         dest.writeString(this.location);
         dest.writeString(this.internalDate);
         dest.writeString(this.userDisplayDate);
+        dest.writeString(this.userPhotoUri);
         dest.writeTypedList(this.commentList);
     }
 }
