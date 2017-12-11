@@ -3,6 +3,8 @@ package edu.illinois.finalproject.util;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Display;
@@ -13,9 +15,7 @@ import android.view.WindowManager;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import edu.illinois.finalproject.R;
 import edu.illinois.finalproject.activities.CommentViewActivity;
@@ -23,17 +23,30 @@ import edu.illinois.finalproject.activities.FeedActivity;
 import edu.illinois.finalproject.schemas.Post;
 
 public class FeedRecyclerViewAdapter<P extends RecyclerView.ViewHolder>
-        extends RecyclerView.Adapter<PostViewHolder> {
+        extends RecyclerView.Adapter<PostViewHolder> implements Parcelable {
     public static final int DESIRED_HEIGHT_OF_POST = 400;
-    //This Map is used to figure out which row item has been clicked on, so that the detail view
-    // is able to display the right information
-    Map<String, Integer> postMap = new HashMap<>();
+    public static final String FEED_RECYCLER_VIEW = "Feed RecyclerViewAdapter being sent";
+    public static final Parcelable.Creator<FeedRecyclerViewAdapter> CREATOR =
+            new Parcelable.Creator<FeedRecyclerViewAdapter>() {
+                @Override
+                public FeedRecyclerViewAdapter createFromParcel(Parcel source) {
+                    return new FeedRecyclerViewAdapter(source);
+                }
+
+                @Override
+                public FeedRecyclerViewAdapter[] newArray(int size) {
+                    return new FeedRecyclerViewAdapter[size];
+                }
+            };
     private Context context;
     private List<Post> posts;
 
     public FeedRecyclerViewAdapter(Context context, List<Post> posts) {
         this.context = context;
         this.posts = posts;
+    }
+
+    protected FeedRecyclerViewAdapter(Parcel in) {
     }
 
     /**
@@ -80,18 +93,27 @@ public class FeedRecyclerViewAdapter<P extends RecyclerView.ViewHolder>
                 detailViewIntent
                         .putExtra(FeedActivity.COMMENT_VIEW_OPEN, posts
                                 .get(position));
+
+                detailViewIntent.putExtra(FEED_RECYCLER_VIEW, this);
                 view.getContext()
                         .startActivity(detailViewIntent);
             });
         } catch (Exception e) {
             Log.d("ASDF", "Something wrong with post.");
         }
-        postMap.put(posts.get(position)
-                            .getImageUri(), position);
     }
 
     @Override
     public int getItemCount() {
         return posts.size();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
     }
 }

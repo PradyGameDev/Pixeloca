@@ -20,6 +20,21 @@ public class IntroActivity extends AppCompatActivity {
     @BindView(R.id.username)
     TextView usernameTextView;
 
+    /**
+     * Checks if a username is valid. Valid usernames cannot contain empty strings, and must be
+     * less than equal to 15 characters.
+     *
+     * @param username The username to validate.
+     * @return true if the username is valid, else false.
+     */
+    public static boolean isValidUsername(String username) {
+        boolean isValidUsername = true;
+        if (username.isEmpty() || username.length() > 15) {
+            isValidUsername = false;
+        }
+        return isValidUsername;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,20 +75,5 @@ public class IntroActivity extends AppCompatActivity {
                     .LENGTH_SHORT)
                     .show();
         }
-    }
-
-    /**
-     * Checks if a username is valid. Valid usernames cannot contain empty strings, and must be
-     * less than equal to 15 characters.
-     *
-     * @param username The username to validate.
-     * @return true if the username is valid, else false.
-     */
-    private boolean isValidUsername(String username) {
-        boolean isValidUsername = true;
-        if (username.isEmpty() || username.length() > 15) {
-            isValidUsername = false;
-        }
-        return isValidUsername;
     }
 }

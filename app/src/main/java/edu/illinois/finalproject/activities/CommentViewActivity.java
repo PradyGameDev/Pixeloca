@@ -1,6 +1,5 @@
 package edu.illinois.finalproject.activities;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -22,6 +21,7 @@ import edu.illinois.finalproject.processing.DatabaseManager;
 import edu.illinois.finalproject.schemas.Comment;
 import edu.illinois.finalproject.schemas.Post;
 import edu.illinois.finalproject.util.CommentRecyclerViewAdapter;
+import edu.illinois.finalproject.util.FeedRecyclerViewAdapter;
 
 import static edu.illinois.finalproject.activities.IntroActivity.USERNAME;
 import static edu.illinois.finalproject.activities.IntroActivity.USERNAME_NOT_SET;
@@ -35,6 +35,8 @@ public class CommentViewActivity extends AppCompatActivity {
     @BindView(R.id.new_comment_textview)
     TextView newCommentTextView;
     private Post tappedPost;
+    private CommentRecyclerViewAdapter commentRecyclerViewAdapter;
+    private FeedRecyclerViewAdapter feedRecyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,25 +44,22 @@ public class CommentViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_comment_view);
         ButterKnife.bind(this);
         tappedPost = getIntent().getParcelableExtra(FeedActivity.COMMENT_VIEW_OPEN);
+        feedRecyclerViewAdapter = getIntent().getParcelableExtra(FeedRecyclerViewAdapter
+                                                                         .FEED_RECYCLER_VIEW);
         List<Comment> commentList = tappedPost.getCommentList();
-        CommentRecyclerViewAdapter commentRecyclerViewAdapter = new CommentRecyclerViewAdapter
+        commentRecyclerViewAdapter = new CommentRecyclerViewAdapter
                 (this, commentList);
         commentRecyclerView.setAdapter(commentRecyclerViewAdapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         commentRecyclerView.setLayoutManager(linearLayoutManager);
         addCommentButton.setOnClickListener(view -> {
-            uploadComment(commentList);
+            uploadComment(commentList, feedRecyclerViewAdapter);
             newCommentTextView.setText("");
-            goToFeed();
         });
     }
 
-    private void goToFeed() {
-        Intent goToFeedIntent = new Intent(this, FeedActivity.class);
-        startActivity(goToFeedIntent);
-    }
-
-    private void uploadComment(List<Comment> commentList) {
+    private void uploadComment(List<Comment> commentList,
+                               FeedRecyclerViewAdapter feedRecyclerViewAdapter) {
         SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
         String commenterName = sharedPreferences.getString(USERNAME, USERNAME_NOT_SET);
@@ -75,7 +74,8 @@ public class CommentViewActivity extends AppCompatActivity {
                 .format(time);
         Comment newComment = new Comment(commenterName, commentText, internalDate, displayDate);
         commentList.add(newComment);
+        commentRecyclerViewAdapter.notifyDataSetChanged();
         DatabaseManager databaseManager = new DatabaseManager(this);
-        databaseManager.updatePost(tappedPost);
+        databaseManager.updatePost(tappedPost, feedRecyclerViewAdapter);
     }
 }

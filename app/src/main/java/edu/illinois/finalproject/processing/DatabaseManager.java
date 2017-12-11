@@ -48,7 +48,7 @@ public class DatabaseManager {
     public static final String DOWNLOAD_URL = "downloadURL";
     public static final String IMAGES_SUBTREE = "images/%s";
     public static final int CAPTURE_REQUEST_CODE = 1;
-    public static final java.lang.String USER_DISPLAY_DATE_PATTERN = "d MMMMM yyyy HH:mm:ss";
+    public static final java.lang.String USER_DISPLAY_DATE_PATTERN = "d MMMMMMMM yyyy HH:mm:ss";
     private static List<Post> posts = new ArrayList<>();
     private Context context;
     //Realtime Database variables
@@ -237,11 +237,14 @@ public class DatabaseManager {
      * If a post has been modified, it overwrites the original post with the modified contents.
      *
      * @param tappedPost The post with modified content.
+     * @param feedRecyclerViewAdapter
      */
-    public void updatePost(Post tappedPost) {
+    public void updatePost(Post tappedPost,
+                           FeedRecyclerViewAdapter feedRecyclerViewAdapter) {
         //Gets reference of last added post
         String referencePath = String.format("posts/%s", tappedPost.getInternalDate());
         DatabaseReference toBeUpdatedReference = database.getReference(referencePath);
         toBeUpdatedReference.setValue(tappedPost);
+        feedRecyclerViewAdapter.notifyDataSetChanged();
     }
 }
