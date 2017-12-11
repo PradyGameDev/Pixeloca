@@ -75,13 +75,40 @@
                 android:id="@+id/post_caption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="10dp"
                 android:text="@string/caption"
                 android:textAlignment="viewStart"
-                android:textColor="#23001E"
-                android:textSize="18sp"
-                android:textStyle="bold"/>
+                android:textColor="@color/carbon_black"
+                android:textSize="14sp"
+                />
+
+            <TextView
+                android:id="@+id/post_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingEnd="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="Date"
+                android:textAlignment="viewStart"
+                android:textAllCaps="true"
+                android:textColor="@color/carbon_background_dark"
+                android:textSize="12sp"/>
+
+            <Button
+                android:id="@+id/post_comments"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_margin="10dp"
+                android:background="?attr/colorAccent"
+                android:text="View comments"
+                android:textColor="#b2ff00"/>
 
         </LinearLayout>
     </android.support.v7.widget.CardView>
+
 </RelativeLayout>

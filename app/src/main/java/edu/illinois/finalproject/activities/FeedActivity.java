@@ -32,7 +32,7 @@ import static edu.illinois.finalproject.activities.IntroActivity.USERNAME_NOT_SE
 
 public class FeedActivity extends AppCompatActivity {
 
-    public static final String DETAIL_VIEW_OPEN = "Detail View Opened";
+    public static final String COMMENT_VIEW_OPEN = "Detail View Opened";
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
     @BindView(R.id.pull_to_refresh_listview)

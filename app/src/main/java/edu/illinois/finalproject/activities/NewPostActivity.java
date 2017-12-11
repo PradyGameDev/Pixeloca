@@ -25,6 +25,7 @@ import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -128,12 +129,16 @@ public class NewPostActivity extends AppCompatActivity {
                 .toString();
         String imageLink = photoDatabase.getLastImageFirebaseUrl();
         //Log.v("Image", imageLink);
-        String date =
-                new SimpleDateFormat(DatabaseManager.PATTERN, Locale.getDefault())
-                        .format(Calendar.getInstance()
-                                        .getTime());
+        Date time = Calendar.getInstance()
+                .getTime();
+        String internalDate =
+                new SimpleDateFormat(DatabaseManager.INTERNAL_DATE_PATTERN, Locale.getDefault())
+                        .format(time);
+        String displayDate = new SimpleDateFormat(DatabaseManager.USER_DISPLAY_DATE_PATTERN,
+                                                  Locale.getDefault()).format(time);
         //Log.d("Location", location);
-        photoDatabase.createAndUploadPost(new Post(username, imageLink, caption, location, date));
+        photoDatabase.createAndUploadPost(new Post(username, imageLink, caption, location,
+                                                   internalDate, displayDate));
         goToFeedActivity();
     }
 

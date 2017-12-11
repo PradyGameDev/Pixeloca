@@ -13,7 +13,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import edu.illinois.finalproject.R;
 import edu.illinois.finalproject.schemas.Post;
-import edu.illinois.finalproject.util.RecyclerViewAdapter;
+import edu.illinois.finalproject.util.FeedRecyclerViewAdapter;
 
 public class PostDetailViewActivity extends AppCompatActivity {
     @BindView(R.id.display_image)
@@ -31,7 +31,7 @@ public class PostDetailViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_detail_view);
         ButterKnife.bind(this);
-        Post tappedPost = getIntent().getParcelableExtra(RecyclerViewAdapter.DETAIL_VIEW_OPEN);
+        Post tappedPost = getIntent().getParcelableExtra(FeedRecyclerViewAdapter.DETAIL_VIEW_OPEN);
         Log.v("PostReceived", tappedPost.toString());
         Picasso.with(this)
                 .load(Uri.parse(tappedPost.getImageUri()))

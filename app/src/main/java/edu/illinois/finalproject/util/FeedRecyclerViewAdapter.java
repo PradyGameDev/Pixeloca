@@ -21,7 +21,7 @@ import edu.illinois.finalproject.R;
 import edu.illinois.finalproject.activities.PostDetailViewActivity;
 import edu.illinois.finalproject.schemas.Post;
 
-public class RecyclerViewAdapter<P extends RecyclerView.ViewHolder>
+public class FeedRecyclerViewAdapter<P extends RecyclerView.ViewHolder>
         extends RecyclerView.Adapter<PostViewHolder> {
     public static final int DESIRED_HEIGHT_OF_POST = 400;
     public static final String DETAIL_VIEW_OPEN = "OPEN_DETAILED_VIEW";
@@ -31,7 +31,7 @@ public class RecyclerViewAdapter<P extends RecyclerView.ViewHolder>
     private Context context;
     private List<Post> posts;
 
-    public RecyclerViewAdapter(Context context, List<Post> posts) {
+    public FeedRecyclerViewAdapter(Context context, List<Post> posts) {
         this.context = context;
         this.posts = posts;
     }
@@ -43,7 +43,7 @@ public class RecyclerViewAdapter<P extends RecyclerView.ViewHolder>
     @Override
     public PostViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context)
-                .inflate(R.layout.row_item, null);
+                .inflate(R.layout.post_row_item, null);
         return new PostViewHolder(view);
     }
 
@@ -71,7 +71,9 @@ public class RecyclerViewAdapter<P extends RecyclerView.ViewHolder>
                                                 .getUsername());
             holder.postLocation.setText(posts.get(position)
                                                 .getLocation());
-            holder.itemView.setOnClickListener(view -> {
+            holder.postDate.setText(posts.get(position)
+                                            .getUserDisplayDate());
+            holder.postCommentButton.setOnClickListener(view -> {
                 Log.v("PostSent", posts.get(position)
                         .toString());
                 Intent detailViewIntent = new Intent(context, PostDetailViewActivity.class);

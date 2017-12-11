@@ -36,7 +36,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import edu.illinois.finalproject.schemas.Post;
-import edu.illinois.finalproject.util.RecyclerViewAdapter;
+import edu.illinois.finalproject.util.FeedRecyclerViewAdapter;
 import id.zelory.compressor.Compressor;
 
 /**
@@ -44,10 +44,11 @@ import id.zelory.compressor.Compressor;
  */
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class DatabaseManager {
-    public static final String PATTERN = "yyyy-MM-dd_HHmmss";
+    public static final String INTERNAL_DATE_PATTERN = "yyyy-MM-dd_HHmmss";
     public static final String DOWNLOAD_URL = "downloadURL";
     public static final String IMAGES_SUBTREE = "images/%s";
     public static final int CAPTURE_REQUEST_CODE = 1;
+    public static final java.lang.String USER_DISPLAY_DATE_PATTERN = "d MMMMM yyyy HH:mm:ss";
     private static List<Post> posts = new ArrayList<>();
     private Context context;
     //Realtime Database variables
@@ -58,7 +59,7 @@ public class DatabaseManager {
     private Uri imageUri;
     private String absoluteFilePath;
     private String lastImageFirebaseUrl;
-    private RecyclerViewAdapter<RecyclerView.ViewHolder> recyclerViewAdapter;
+    private FeedRecyclerViewAdapter<RecyclerView.ViewHolder> feedRecyclerViewAdapter;
 
     public DatabaseManager(Context context) {
         this.context = context;
@@ -78,15 +79,15 @@ public class DatabaseManager {
                 postSet.addAll(posts);
                 posts.clear();
                 posts.addAll(postSet);
-                if (recyclerViewAdapter == null) {
-                    recyclerViewAdapter =
-                            new RecyclerViewAdapter<RecyclerView.ViewHolder>(context, posts);
+                if (feedRecyclerViewAdapter == null) {
+                    feedRecyclerViewAdapter =
+                            new FeedRecyclerViewAdapter<RecyclerView.ViewHolder>(context, posts);
                     LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
                     recyclerView.setLayoutManager(linearLayoutManager);
-                    recyclerView.setAdapter(recyclerViewAdapter);
+                    recyclerView.setAdapter(feedRecyclerViewAdapter);
 
                 } else {
-                    recyclerViewAdapter.notifyDataSetChanged();
+                    feedRecyclerViewAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -122,7 +123,7 @@ public class DatabaseManager {
 
     public void createAndUploadPost(Post post) {
         newPostReference =
-                database.getReference("posts/" + post.getDate());
+                database.getReference("posts/" + post.getInternalDate());
         newPostReference.setValue(post);
         Toast.makeText(context, "Post successfully uploaded!", Toast.LENGTH_SHORT)
                 .show();
@@ -130,7 +131,7 @@ public class DatabaseManager {
 
     public Uri createImageFile() {
         // Create an image file name
-        String timeStamp = new SimpleDateFormat(PATTERN).format(new Date());
+        String timeStamp = new SimpleDateFormat(INTERNAL_DATE_PATTERN).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File image = null;
         try {

@@ -30,6 +30,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"/>
         </provider>
+
         <activity android:name=".activities.IntroActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -42,6 +43,8 @@
         <activity android:name=".activities.PostDetailViewActivity">
         </activity>
         <activity android:name=".activities.NewPostActivity">
+        </activity>
+        <activity android:name=".activities.CommentViewActivity">
         </activity>
     </application>
 
