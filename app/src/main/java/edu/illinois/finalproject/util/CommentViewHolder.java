@@ -7,6 +7,9 @@ import android.widget.TextView;
 
 import edu.illinois.finalproject.R;
 
+/**
+ * Holds the various widgets used to display a comment.
+ */
 class CommentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     public TextView commenterName;
     public TextView commentText;

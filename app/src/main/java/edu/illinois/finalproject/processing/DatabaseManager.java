@@ -40,6 +40,8 @@ import edu.illinois.finalproject.util.FeedRecyclerViewAdapter;
 import id.zelory.compressor.Compressor;
 
 /**
+ * Manages all database operations of the app.
+ * Interfaces between various capplication components and Firebase Realtime DB + Storage
  * Allows auto-syncing of the database, as well as operations to add posts.
  */
 @RequiresApi(api = Build.VERSION_CODES.M)
@@ -66,6 +68,7 @@ public class DatabaseManager {
         database = FirebaseDatabase.getInstance();
     }
 
+    //This constructor is used by the Feed RecyclerView
     public DatabaseManager(Context context, RecyclerView recyclerView) {
         this.context = context;
         database = FirebaseDatabase.getInstance();
@@ -145,6 +148,7 @@ public class DatabaseManager {
         }
     }
 
+    //Used to retrieve the URL of the uploaded image
     public String getLastImageFirebaseUrl() {
         return lastImageFirebaseUrl;
     }

@@ -104,7 +104,7 @@ public class NewPostActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[]
             grantResults) {
         Log.d("ASDF", String.format("Request Code: %d", requestCode));
-        locationHandler.setHaveLocationPermission(
+        locationHandler.setAppHasLocationPermissions(
                 requestCode == LocationHandler.MY_PERMISSIONS_REQUEST_ACCESS_LOCATION);
     }
 

@@ -17,29 +17,30 @@ public class LocationHandler {
 
     private TextView locationTextView;
     private Context context;
-    private Location lastKnownLocation;
+    //Manages the reverse geocoding once a location is found
     private GeocodingManager geocodingManager;
+    private Location lastKnownLocation;
     private NewPostActivity activity;
-    private boolean haveLocationPermission;
+    private boolean appHasLocationPermissions;
 
     public LocationHandler(TextView locationTextView, NewPostActivity activity) {
         this.locationTextView = locationTextView;
         this.context = activity;
         this.activity = activity;
 
-        this.setHaveLocationPermission(
+        this.setAppHasLocationPermissions(
                 activity.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) ==
                         PackageManager.PERMISSION_GRANTED);
-        Log.d("ASDF", "" + haveLocationPermission);
+        Log.d("ASDF", "" + appHasLocationPermissions);
     }
 
-    public void setHaveLocationPermission(boolean haveLocationPermission) {
-        this.haveLocationPermission = haveLocationPermission;
+    public void setAppHasLocationPermissions(boolean appHasLocationPermissions) {
+        this.appHasLocationPermissions = appHasLocationPermissions;
     }
 
     @SuppressWarnings({"MissingPermission"})
     public void setUpLocationGathering() {
-        if (!haveLocationPermission) {
+        if (!appHasLocationPermissions) {
             return;
         }
 
@@ -85,11 +86,15 @@ public class LocationHandler {
     @SuppressWarnings({"MissingPermission"})
     private void makeUseOfNewLocation(LocationManager locationManager) {
         Log.v("Location", "Debug");
-        if (!haveLocationPermission) {
+        if (!appHasLocationPermissions) {
             return;
         }
 
         Log.d("Location", "Doing things");
+        //The Geocoder request is an asynchronous operation, so for the time being, the
+        // coordinates are displayed in the TextView
+        //If the Geocoder call succeeds, the coordinates are replaced by the formatted address
+        //Else, the coordinates are shown
         try {
             lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             geocodingManager = new GeocodingManager(lastKnownLocation, locationTextView);

@@ -6,9 +6,9 @@ import java.util.ArrayList;
 
 public class ReverseGeocoderResponse {
     @SerializedName("results")
-    private ArrayList<AddressResult> resultContainers;
+    private ArrayList<AddressResult> results;
 
     public ArrayList<AddressResult> getResults() {
-        return resultContainers;
+        return results;
     }
 }

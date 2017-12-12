@@ -22,6 +22,10 @@ import edu.illinois.finalproject.activities.CommentViewActivity;
 import edu.illinois.finalproject.activities.FeedActivity;
 import edu.illinois.finalproject.schemas.Post;
 
+/**
+ * An adapter for the Feed View. The moment this activity is launched, it connects to Firebase
+ * and fetches new posts.
+ */
 public class FeedRecyclerViewAdapter<P extends RecyclerView.ViewHolder>
         extends RecyclerView.Adapter<PostViewHolder> implements Parcelable {
     public static final int DESIRED_HEIGHT_OF_POST = 350;
@@ -45,6 +49,7 @@ public class FeedRecyclerViewAdapter<P extends RecyclerView.ViewHolder>
         this.context = context;
         this.posts = posts;
     }
+
     protected FeedRecyclerViewAdapter(Parcel in) {
     }
 
@@ -68,6 +73,7 @@ public class FeedRecyclerViewAdapter<P extends RecyclerView.ViewHolder>
         try {
             WindowManager windowManager = (WindowManager) context.getSystemService(Context
                                                                                            .WINDOW_SERVICE);
+
             Display display = windowManager.getDefaultDisplay();
             Log.v("Image URI", posts.get(position)
                     .getImageUri());

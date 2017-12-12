@@ -19,6 +19,10 @@ import java.nio.charset.Charset;
 import edu.illinois.finalproject.schemas.APIKeys;
 import edu.illinois.finalproject.schemas.ReverseGeocoderResponse;
 
+/**
+ * Manages the API call to the Google Maps Geocoding API.
+ * On successful completion, it sets the given TextView to the formatted address
+ */
 public class GeocoderAsyncTask extends AsyncTask<String, Location, ReverseGeocoderResponse> {
     public static final String BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json";
     private Location location;

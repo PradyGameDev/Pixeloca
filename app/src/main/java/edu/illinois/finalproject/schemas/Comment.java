@@ -18,8 +18,11 @@ public class Comment implements Parcelable, Comparable<Comment> {
     };
     private String name;
     private String text;
+    //Both dates are the same but internalDate stores it in a format that is easy to compare with
+    // others, while display date is a good way to display it.
     private String internalDate;
     private String displayDate;
+    //A Uri to a user's profile photo
     private String userPhotoUri;
 
     public Comment(String name, String text, String internalDate, String displayDate,
@@ -93,6 +96,7 @@ public class Comment implements Parcelable, Comparable<Comment> {
                 '}';
     }
 
+    //Parcelable boilerplate - allows comment objects to be passed as Intent extras
     @Override
     public int describeContents() {
         return 0;
@@ -107,6 +111,8 @@ public class Comment implements Parcelable, Comparable<Comment> {
         dest.writeString(this.userPhotoUri);
     }
 
+    //Compares comments by date of posting. Useful to render comments in reverse-chronological
+    // order.
     @Override
     public int compareTo(
             @NonNull
