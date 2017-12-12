@@ -11,7 +11,6 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
@@ -27,13 +26,13 @@ public class GeocoderAsyncTask extends AsyncTask<String, Location, ReverseGeocod
     public static final String BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json";
     private Location location;
     private GeocodingManager geocodingManager;
-    private TextView textView;
+    private TextView locationTextView;
 
     public GeocoderAsyncTask(GeocodingManager geocodingManager, Location location,
-                             TextView textView) {
+                             TextView locationTextView) {
         this.location = location;
         this.geocodingManager = geocodingManager;
-        this.textView = textView;
+        this.locationTextView = locationTextView;
     }
 
     @Override
@@ -56,12 +55,7 @@ public class GeocoderAsyncTask extends AsyncTask<String, Location, ReverseGeocod
             Gson gson = new Gson();
             ReverseGeocoderResponse response = gson.fromJson(inputStreamReader,
                                                              ReverseGeocoderResponse.class);
-            //Log.v("Gson response", response.getResults()
-            //        .get(0)
-            //        .getFormattedAddress());
             return response;
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

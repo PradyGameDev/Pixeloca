@@ -153,7 +153,7 @@ public class DatabaseManager {
         return lastImageFirebaseUrl;
     }
 
-    public void createAndUploadPost(Post post) {
+    public void uploadPost(Post post) {
         newPostReference =
                 database.getReference("posts/" + post.getInternalDate());
         newPostReference.setValue(post);
@@ -194,6 +194,8 @@ public class DatabaseManager {
      * Compresses the file.
      * Gets a reference to Firebase Cloud Storage.
      * Stores the file in the cloud.
+     * <p>
+     * Compression is essential to prevent the application from running out-of-memory.
      */
     public void storeImageInFirebase(Uri imageUri) {
         File file = new File(absoluteFilePath);
@@ -208,7 +210,6 @@ public class DatabaseManager {
             Log.d("Compressor", "Compressing the file didn't work.");
             e.printStackTrace();
         }
-        //Uri imageUri = Uri.fromFile(file);
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
         StorageReference rootStorageReference = firebaseStorage.getReference();
         StorageReference imageReference =
@@ -221,13 +222,6 @@ public class DatabaseManager {
                                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
                                 lastImageFirebaseUrl = downloadUrl.toString();
                                 Log.v(DOWNLOAD_URL, String.valueOf(downloadUrl));
-                                //String outputString = String.format("Image was uploaded with
-                                // URL:" +
-                                //                                            " %s", downloadUrl
-                                //                                            .toString());
-                                //Toast.makeText(imageView.getContext(), outputString,
-                                //               LENGTH_SHORT)
-                                //        .show();
                             }
                         })
                 .addOnFailureListener(new OnFailureListener() {
@@ -235,10 +229,6 @@ public class DatabaseManager {
                     public void onFailure(
                             @NonNull
                                     Exception e) {
-                        //Toast.makeText(imageView.getContext(), "Image did not upload to
-                        // Firebase.",
-                        //               LENGTH_SHORT)
-                        //        .show();
                     }
                 });
     }

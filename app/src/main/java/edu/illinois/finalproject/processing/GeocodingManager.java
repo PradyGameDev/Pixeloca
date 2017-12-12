@@ -38,10 +38,11 @@ public class GeocodingManager {
      */
     public void onResponseReceived(ReverseGeocoderResponse response) {
         boolean geocoderFoundAddress =
-                response != null && response.getResults() != null && !response.getResults()
+                response != null && response.getAddressResultArrayList() != null &&
+                        !response.getAddressResultArrayList()
                         .isEmpty();
         if (geocoderFoundAddress) {
-            String formattedAddress = response.getResults()
+            String formattedAddress = response.getAddressResultArrayList()
                     .get(0)
                     .getFormattedAddress();
             lastKnownFormattedAddress = formattedAddress;

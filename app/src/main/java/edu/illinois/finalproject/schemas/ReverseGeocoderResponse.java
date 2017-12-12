@@ -5,10 +5,10 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 
 public class ReverseGeocoderResponse {
-    @SerializedName("results")
-    private ArrayList<AddressResult> results;
+    @SerializedName("addressResultArrayList")
+    private ArrayList<AddressResult> addressResultArrayList;
 
-    public ArrayList<AddressResult> getResults() {
-        return results;
+    public ArrayList<AddressResult> getAddressResultArrayList() {
+        return addressResultArrayList;
     }
 }

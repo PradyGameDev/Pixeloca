@@ -50,6 +50,15 @@ public class NewPostActivity extends AppCompatActivity {
     private DatabaseManager photoDatabase;
     private LocationHandler locationHandler;
     private float rotationInDegrees = 90f;
+    //User input
+    private String username;
+    private String caption;
+    private String location;
+    private String imageLink;
+    private Date time;
+    private String internalDate;
+    private String displayDate;
+    private String userPhotoUri;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -118,33 +127,35 @@ public class NewPostActivity extends AppCompatActivity {
 
     /**
      * Called when the Post button on the Toolbar is tapped. Combines the data into a Post object
-     * and uploads it to Firebase.
+     * and uploads it to Firebase. Finally, take the user back to the feed activity.
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void onPostButtonClick() {
+        storeUserInput();
+        photoDatabase.uploadPost(new Post(username, imageLink, caption, location,
+                                          internalDate, displayDate, userPhotoUri));
+        goToFeedActivity();
+    }
+
+    private void storeUserInput() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String username = sharedPreferences
+        username = sharedPreferences
                 .getString(IntroActivity.USERNAME, IntroActivity.USERNAME_NOT_SET);
-        String caption = captionEditText.getText()
+        caption = captionEditText.getText()
                 .toString();
-        String location = locationTextView.getText()
+        location = locationTextView.getText()
                 .toString();
-        String imageLink = photoDatabase.getLastImageFirebaseUrl();
-        //Log.v("Image", imageLink);
-        Date time = Calendar.getInstance()
+        imageLink = photoDatabase.getLastImageFirebaseUrl();
+        time = Calendar.getInstance()
                 .getTime();
-        String internalDate =
+        internalDate =
                 new SimpleDateFormat(DatabaseManager.INTERNAL_DATE_PATTERN, Locale.getDefault())
                         .format(time);
-        String displayDate = new SimpleDateFormat(DatabaseManager.USER_DISPLAY_DATE_PATTERN,
-                                                  Locale.getDefault()).format(time);
-        String userPhotoUri = sharedPreferences.getString(IntroActivity.USER_PHOTO_URI,
-                                                          IntroActivity.PHOTO_NOT_SET);
-        //Log.d("Location", location);
-        //Creates a Post instance and passes it to an upload method in DatabaseManager
-        photoDatabase.createAndUploadPost(new Post(username, imageLink, caption, location,
-                                                   internalDate, displayDate, userPhotoUri));
-        goToFeedActivity();
+        displayDate = new SimpleDateFormat(DatabaseManager.USER_DISPLAY_DATE_PATTERN,
+                                           Locale.getDefault()).format(time);
+        userPhotoUri = sharedPreferences.getString(IntroActivity.USER_PHOTO_URI,
+                                                   IntroActivity.PHOTO_NOT_SET);
+
     }
 
     private void goToFeedActivity() {
