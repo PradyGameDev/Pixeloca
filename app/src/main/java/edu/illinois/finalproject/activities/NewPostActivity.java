@@ -15,8 +15,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -40,8 +38,6 @@ public class NewPostActivity extends AppCompatActivity {
 
     @BindView(R.id.imageView)
     ImageView imageView;
-    @BindView(R.id.locationButton)
-    Button locationButton;
     @BindView(R.id.locationTextView)
     TextView locationTextView;
     @BindView(R.id.captionEditText)
@@ -71,6 +67,8 @@ public class NewPostActivity extends AppCompatActivity {
         Log.v("Debug", "Is this even getting called?" + imageUri);
         capturePhoto();
         askForLocationPermissions();
+        //Starts trying to get the user's location
+        locationHandler.setUpLocationGathering();
     }
 
     public void askForLocationPermissions() {
@@ -116,11 +114,6 @@ public class NewPostActivity extends AppCompatActivity {
         locationHandler.setAppHasLocationPermissions(
                 requestCode == LocationHandler.MY_PERMISSIONS_REQUEST_ACCESS_LOCATION);
     }
-
-    public void onLocationButtonClick(View v) {
-        locationHandler.setUpLocationGathering();
-    }
-
     public void updateLocationTextView(String latestFormattedAddress) {
         captionEditText.setText(latestFormattedAddress);
     }

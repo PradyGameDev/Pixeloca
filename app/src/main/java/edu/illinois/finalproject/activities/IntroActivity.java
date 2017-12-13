@@ -2,6 +2,7 @@ package edu.illinois.finalproject.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -36,6 +37,8 @@ public class IntroActivity extends AppCompatActivity {
     public static final String USER_NAME = "Username";
     public static final String USER_PHOTO_URI = "User Photo URL";
     public static final String PHOTO_NOT_SET = "USER_PHOTO_NOT_SET_YET";
+    public static final String DEFAULT_PROFILE_PICTURE_URI =
+            "https://gammarad.fbk.eu/sites/default/files/default_images/avatar.png";
     private static final String FIREBASE_AUTH_TAG = "FirebaseAuth";
     @BindView(R.id.display_name_edittext)
     EditText displayNameEditText;
@@ -68,7 +71,9 @@ public class IntroActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
-        if (firebaseUser != null) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (!(firebaseUser == null || sharedPreferences.getString(USERNAME, USERNAME_NOT_SET)
+                .equals(USERNAME_NOT_SET))) {
             openFeed(firebaseUser);
         }
         /*
@@ -133,7 +138,10 @@ public class IntroActivity extends AppCompatActivity {
                                 // If sign up fails, display a message to the user.
                                 Log.w(FIREBASE_AUTH_TAG, "createUserWithEmail:failure",
                                       task.getException());
-                                Toast.makeText(IntroActivity.this, "Authentication failed.",
+                                Toast.makeText(IntroActivity.this, "Authentication failed. " +
+                                                       "Your password must be at least 6 " +
+                                                       "characters, " +
+                                                       "and hard to guess",
                                                Toast.LENGTH_SHORT)
                                         .show();
                             }
@@ -252,8 +260,14 @@ public class IntroActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(USERNAME, user.getDisplayName());
-        editor.putString(USER_PHOTO_URI, user.getPhotoUrl()
-                .toString());
+        if (user.getPhotoUrl() != null) {
+            editor.putString(USER_PHOTO_URI, user.getPhotoUrl()
+                    .toString());
+        } else {
+            editor.putString(USER_PHOTO_URI, String.valueOf(
+                    Uri.parse(
+                            DEFAULT_PROFILE_PICTURE_URI)));
+        }
         editor.commit();
         startActivity(openFeedIntent);
     }

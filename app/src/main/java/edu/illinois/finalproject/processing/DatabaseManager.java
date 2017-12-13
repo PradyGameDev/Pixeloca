@@ -245,6 +245,6 @@ public class DatabaseManager {
         String referencePath = String.format("posts/%s", tappedPost.getInternalDate());
         DatabaseReference toBeUpdatedReference = database.getReference(referencePath);
         toBeUpdatedReference.setValue(tappedPost);
-        feedRecyclerViewAdapter.notifyDataSetChanged();
+        //feedRecyclerViewAdapter.notifyDataSetChanged();
     }
 }

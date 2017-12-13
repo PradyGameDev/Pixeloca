@@ -37,6 +37,7 @@ public class CommentViewActivity extends AppCompatActivity {
     private Post tappedPost;
     private CommentRecyclerViewAdapter commentRecyclerViewAdapter;
     private FeedRecyclerViewAdapter feedRecyclerViewAdapter;
+    private DatabaseManager databaseManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,11 +45,13 @@ public class CommentViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_comment_view);
         ButterKnife.bind(this);
         tappedPost = getIntent().getParcelableExtra(FeedActivity.COMMENT_VIEW_OPEN);
+        //Retrieve the post from the database using data from tappedPost
+        databaseManager = new DatabaseManager(this);
         feedRecyclerViewAdapter = getIntent().getParcelableExtra(FeedRecyclerViewAdapter
                                                                          .FEED_RECYCLER_VIEW);
         List<Comment> commentList = tappedPost.getCommentList();
         commentRecyclerViewAdapter = new CommentRecyclerViewAdapter
-                (this, commentList);
+                (this, tappedPost.getCommentList());
         commentRecyclerView.setAdapter(commentRecyclerViewAdapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         commentRecyclerView.setLayoutManager(linearLayoutManager);
@@ -56,6 +59,14 @@ public class CommentViewActivity extends AppCompatActivity {
             uploadComment(commentList, feedRecyclerViewAdapter);
             newCommentTextView.setText("");
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (commentRecyclerViewAdapter != null) {
+            commentRecyclerViewAdapter.notifyDataSetChanged();
+        }
     }
 
     private void uploadComment(List<Comment> commentList,
@@ -76,8 +87,11 @@ public class CommentViewActivity extends AppCompatActivity {
                                                           IntroActivity.PHOTO_NOT_SET);
         Comment newComment =
                 new Comment(commenterName, commentText, internalDate, displayDate, userPhotoUri);
-        commentList.add(newComment);
-        commentRecyclerViewAdapter.notifyDataSetChanged();
+        tappedPost.getCommentList()
+                .add(newComment);
+        //commentRecyclerViewAdapter.notifyDataSetChanged();
+        this.commentRecyclerView.setAdapter(
+                new CommentRecyclerViewAdapter(this, tappedPost.getCommentList()));
         DatabaseManager databaseManager = new DatabaseManager(this);
         databaseManager.updatePost(tappedPost, feedRecyclerViewAdapter);
     }

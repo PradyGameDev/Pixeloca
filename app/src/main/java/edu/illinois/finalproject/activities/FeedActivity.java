@@ -12,20 +12,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
-import java.util.ArrayList;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import edu.illinois.finalproject.R;
 import edu.illinois.finalproject.processing.DatabaseManager;
-import edu.illinois.finalproject.schemas.Post;
 
 import static edu.illinois.finalproject.activities.IntroActivity.USERNAME;
 import static edu.illinois.finalproject.activities.IntroActivity.USERNAME_NOT_SET;
@@ -110,27 +106,6 @@ public class FeedActivity extends AppCompatActivity {
         startActivity(openNextActivityIntent);
     }
 
-    class ListItemOnClickListener implements View.OnClickListener {
-        private ArrayList<Post> posts;
-        //The position of the item in the RecyclerView that was clicked
-        private int position;
-
-        public ListItemOnClickListener(ArrayList<Post> posts) {
-            this.posts = posts;
-        }
-
-        @Override
-        public void onClick(View v) {
-            position = recyclerView.getChildAdapterPosition(v);
-            Intent detailViewIntent = new Intent(v.getContext(), Post.class);
-            detailViewIntent
-                    .putExtra(Post.class.getSimpleName(), posts
-                            .get(position));
-            v.getContext()
-                    .startActivity(detailViewIntent);
-        }
-    }
-
     private class GetDataTask extends AsyncTask<Void, Void, Boolean> {
         @Override
         protected Boolean doInBackground(Void... voids) {
@@ -140,7 +115,11 @@ public class FeedActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean result) {
             // Call onRefreshComplete when the list has been refreshed.
-            pullToRefreshListView.onRefreshComplete();
+            if (recyclerView.getAdapter() != null) {
+                recyclerView.getAdapter()
+                        .notifyDataSetChanged();
+                pullToRefreshListView.onRefreshComplete();
+            }
             super.onPostExecute(result);
         }
     }

@@ -8,25 +8,6 @@
     android:background="#1098F7"
     tools:context="edu.illinois.finalproject.activities.NewPostActivity">
 
-    <Button
-        android:id="@+id/locationButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/colorPrimary"
-        android:elevation="0dp"
-        android:onClick="onLocationButtonClick"
-        android:padding="5dp"
-        android:text="get location"
-        android:textColor="@android:color/white"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Get location"/>
-
     <EditText
         android:id="@+id/captionEditText"
         android:layout_width="0dp"
@@ -55,8 +36,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/locationButton"
-        app:srcCompat="@drawable/bg"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/camera"/>
 
     <TextView
         android:id="@+id/locationTextView"

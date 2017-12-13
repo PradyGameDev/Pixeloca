@@ -24,6 +24,7 @@ import butterknife.ButterKnife;
 import edu.illinois.finalproject.R;
 
 import static edu.illinois.finalproject.activities.IntroActivity.USERNAME;
+import static edu.illinois.finalproject.activities.IntroActivity.USER_PHOTO_URI;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -31,20 +32,28 @@ public class SettingsActivity extends AppCompatActivity {
     EditText usernameEditText;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         ButterKnife.bind(this);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        usernameEditText.setText(sharedPreferences.getString(IntroActivity.USERNAME,
+                                                             IntroActivity.USERNAME_NOT_SET));
     }
 
-    public void setUsername(View view) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences
-                (this);
+    /**
+     * Called when the "Save and go back" button is tapped on.
+     *
+     * @param view
+     */
+    public void onSetUsername(View view) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         String username = usernameEditText.getText()
-                .toString();
+                .toString()
+                .trim();
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
         if (IntroActivity.isValidUsername(username)) {
@@ -96,6 +105,11 @@ public class SettingsActivity extends AppCompatActivity {
                         Toast.makeText(SettingsActivity.this, "You have been signed out.", Toast
                                 .LENGTH_SHORT)
                                 .show();
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        //Unset SharedPreferences
+                        editor.remove(USERNAME);
+                        editor.remove(USER_PHOTO_URI);
+                        editor.apply();
                         goToSignInScreen();
                     }
                 });
