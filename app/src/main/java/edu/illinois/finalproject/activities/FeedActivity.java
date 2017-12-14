@@ -58,8 +58,10 @@ public class FeedActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (feedDatabase != null) {
-            feedDatabase.updateFeed();
+            feedDatabase = new DatabaseManager(this, recyclerView);
         }
+        feedDatabase.forceShit();
+        feedDatabase.updateFeed();
     }
 
     @Override

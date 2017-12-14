@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -51,7 +52,7 @@ public class CommentViewActivity extends AppCompatActivity {
                                                                          .FEED_RECYCLER_VIEW);
         List<Comment> commentList = tappedPost.getCommentList();
         commentRecyclerViewAdapter = new CommentRecyclerViewAdapter
-                (this, tappedPost.getCommentList());
+                (this, commentList);
         commentRecyclerView.setAdapter(commentRecyclerViewAdapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         commentRecyclerView.setLayoutManager(linearLayoutManager);
@@ -59,12 +60,16 @@ public class CommentViewActivity extends AppCompatActivity {
             uploadComment(commentList, feedRecyclerViewAdapter);
             newCommentTextView.setText("");
         });
+        databaseManager.updateComment(tappedPost, tappedPost.getCommentList(),
+                                      commentRecyclerViewAdapter);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         if (commentRecyclerViewAdapter != null) {
+            Log.d("lmao", "onresume called");
+            databaseManager.forceShit();
             commentRecyclerViewAdapter.notifyDataSetChanged();
         }
     }
@@ -87,12 +92,15 @@ public class CommentViewActivity extends AppCompatActivity {
                                                           IntroActivity.PHOTO_NOT_SET);
         Comment newComment =
                 new Comment(commenterName, commentText, internalDate, displayDate, userPhotoUri);
-        tappedPost.getCommentList()
+        //tappedPost.getCommentList()
+        //        .add(newComment);
+        commentRecyclerViewAdapter.getList()
                 .add(newComment);
-        //commentRecyclerViewAdapter.notifyDataSetChanged();
-        this.commentRecyclerView.setAdapter(
-                new CommentRecyclerViewAdapter(this, tappedPost.getCommentList()));
+        commentRecyclerViewAdapter.notifyDataSetChanged();
+        //this.commentRecyclerView.setAdapter(
+        //        new CommentRecyclerViewAdapter(this, tappedPost.getCommentList()));
         DatabaseManager databaseManager = new DatabaseManager(this);
         databaseManager.updatePost(tappedPost, feedRecyclerViewAdapter);
+        databaseManager.updateComment(tappedPost, commentList, commentRecyclerViewAdapter);
     }
 }

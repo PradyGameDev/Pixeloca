@@ -2,6 +2,7 @@ package edu.illinois.finalproject.util;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,10 @@ public class CommentRecyclerViewAdapter<P extends RecyclerView.ViewHolder>
         this.commentList = commentList;
     }
 
+    public List<Comment> getList() {
+        return commentList;
+    }
+
     @Override
     public CommentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context)
@@ -32,6 +37,10 @@ public class CommentRecyclerViewAdapter<P extends RecyclerView.ViewHolder>
 
     @Override
     public void onBindViewHolder(CommentViewHolder holder, int position) {
+        Log.v("CommentPos", String.valueOf(position));
+        Log.v("CommentPos", commentList.get(position)
+                .getText());
+        Log.v("CommentPos", "-------------------------");
         holder.commenterName.setText(commentList.get(position)
                                              .getName());
         holder.commentText.setText(commentList.get(position)
@@ -46,6 +55,9 @@ public class CommentRecyclerViewAdapter<P extends RecyclerView.ViewHolder>
 
     @Override
     public int getItemCount() {
+        if (commentList == null) {
+            return 0;
+        }
         return commentList.size();
     }
 }

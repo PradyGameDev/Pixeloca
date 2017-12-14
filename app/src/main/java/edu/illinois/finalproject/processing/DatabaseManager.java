@@ -21,6 +21,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -31,11 +32,14 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import edu.illinois.finalproject.schemas.Comment;
 import edu.illinois.finalproject.schemas.Post;
+import edu.illinois.finalproject.util.CommentRecyclerViewAdapter;
 import edu.illinois.finalproject.util.FeedRecyclerViewAdapter;
 import id.zelory.compressor.Compressor;
 
@@ -73,6 +77,11 @@ public class DatabaseManager {
         this.context = context;
         database = FirebaseDatabase.getInstance();
         parentReference = database.getReference("posts");
+        feedRecyclerViewAdapter =
+                new FeedRecyclerViewAdapter<RecyclerView.ViewHolder>(context, posts);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(feedRecyclerViewAdapter);
         parentReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -81,24 +90,23 @@ public class DatabaseManager {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Log.d("lmao", "onChildChanged called");
                 updateFeedAfterNewData(dataSnapshot, context, recyclerView);
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+                updateFeedAfterNewData(dataSnapshot, context, recyclerView);
             }
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
+                updateFeedAfterNewData(dataSnapshot, context, recyclerView);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
-
         });
     }
 
@@ -124,7 +132,11 @@ public class DatabaseManager {
      */
     private void updateFeedAfterNewData(DataSnapshot dataSnapshot, Context context,
                                         RecyclerView recyclerView) {
-        posts.add(dataSnapshot.getValue(Post.class));
+        Post newPost = dataSnapshot.getValue(Post.class);
+        if (newPost.getInternalDate() == null) {
+            return;
+        }
+        posts.add(newPost);
         //Remove duplicate items from the ArrayList
         Set<Post> postSet = new TreeSet<>();
         postSet.addAll(posts);
@@ -246,5 +258,45 @@ public class DatabaseManager {
         DatabaseReference toBeUpdatedReference = database.getReference(referencePath);
         toBeUpdatedReference.setValue(tappedPost);
         //feedRecyclerViewAdapter.notifyDataSetChanged();
+    }
+
+    public void forceShit() {
+        String referencePath = String.format("posts/trigger/adder");
+        DatabaseReference lul = database.getReference(referencePath);
+        ArrayList<Double> wtf = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            wtf.add(Math.random());
+        }
+        Log.d("lmao", "Writing new things: " + wtf.toString());
+        lul.setValue(wtf);
+    }
+
+    public void updateComment(Post tappedPost, List<Comment> commentList,
+                              CommentRecyclerViewAdapter adapter) {
+        DatabaseReference reference = database.getReference(String.format("posts/%s/commentList/",
+                                                                          tappedPost
+                                                                                  .getInternalDate()));
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterator<DataSnapshot> it = dataSnapshot.getChildren()
+                        .iterator();
+                commentList.clear();
+                while (it.hasNext()) {
+                    Comment comment = it.next()
+                            .getValue(Comment.class);
+                    commentList.add(comment);
+                    Log.v("NewComment", String.valueOf(comment));
+                }
+                //Comment comment = dataSnapshot.getValue(Comment.class);
+                //commentList.add(comment);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }
