@@ -6,7 +6,6 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -68,8 +67,6 @@ public class CommentViewActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (commentRecyclerViewAdapter != null) {
-            Log.d("lmao", "onresume called");
-            databaseManager.forceShit();
             commentRecyclerViewAdapter.notifyDataSetChanged();
         }
     }

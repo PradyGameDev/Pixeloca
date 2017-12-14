@@ -2,7 +2,6 @@ package edu.illinois.finalproject.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -12,11 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.ListView;
 import android.widget.Toast;
-
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,8 +26,6 @@ public class FeedActivity extends AppCompatActivity {
     public static final String COMMENT_VIEW_OPEN = "Comment View Opened";
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
-    @BindView(R.id.pull_to_refresh_listview)
-    PullToRefreshListView pullToRefreshListView;
     private DatabaseManager feedDatabase;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -42,14 +35,6 @@ public class FeedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
         ButterKnife.bind(this);
-        pullToRefreshListView.setOnRefreshListener(
-                new PullToRefreshBase.OnRefreshListener<ListView>() {
-                    @Override
-                    public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-                        // Do work to refresh the list here.
-                        new GetDataTask().execute();
-                    }
-                });
         welcomeUser();
         feedDatabase = new DatabaseManager(this, recyclerView);
     }
@@ -60,7 +45,6 @@ public class FeedActivity extends AppCompatActivity {
         if (feedDatabase != null) {
             feedDatabase = new DatabaseManager(this, recyclerView);
         }
-        feedDatabase.forceShit();
         feedDatabase.updateFeed();
     }
 
@@ -83,11 +67,7 @@ public class FeedActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.action_create_new_post: {
-                //Toast.makeText(this, "New post created.", Toast.LENGTH_SHORT)
-                //        .show();
                 openNextActivity();
-                //Intent goBackIntent = new Intent(this, FeedActivity.class);
-                //startActivity(goBackIntent);
                 return true;
             }
             case R.id.action_settings: {
@@ -106,23 +86,5 @@ public class FeedActivity extends AppCompatActivity {
     private void openNextActivity() {
         Intent openNextActivityIntent = new Intent(this, NewPostActivity.class);
         startActivity(openNextActivityIntent);
-    }
-
-    private class GetDataTask extends AsyncTask<Void, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            // Call onRefreshComplete when the list has been refreshed.
-            if (recyclerView.getAdapter() != null) {
-                recyclerView.getAdapter()
-                        .notifyDataSetChanged();
-                pullToRefreshListView.onRefreshComplete();
-            }
-            super.onPostExecute(result);
-        }
     }
 }

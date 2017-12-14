@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -64,6 +65,17 @@ public class IntroActivity extends AppCompatActivity {
         return isValidUsername;
     }
 
+    /**
+     * Removes the menu
+     *
+     * @param menu The toolbar
+     * @return False so no menu is rendered
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return false;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,18 +88,6 @@ public class IntroActivity extends AppCompatActivity {
                 .equals(USERNAME_NOT_SET))) {
             openFeed(firebaseUser);
         }
-        /*
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        Log.d("SharedPreference", sharedPreferences.getString(USERNAME, USERNAME_NOT_SET));
-        *//*Checks if username already set.
-        * If set, go to feed.
-        * Else allow user to set it*//*
-        if (!sharedPreferences.getString(USERNAME, USERNAME_NOT_SET)
-                .equals(USERNAME_NOT_SET)) {
-            openFeed(user);
-        }
-        */
     }
 
     /**
@@ -271,21 +271,4 @@ public class IntroActivity extends AppCompatActivity {
         editor.commit();
         startActivity(openFeedIntent);
     }
-
-    //public void setUsername(View view) {
-    //    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences
-    //            (this);
-    //    SharedPreferences.Editor editor = sharedPreferences.edit();
-    //    String username = usernameTextView.getText()
-    //            .toString();
-    //    if (isValidUsername(username)) {
-    //        editor.putString(USERNAME, username);
-    //        editor.commit();
-    //        openFeed(user);
-    //    } else {
-    //        Toast.makeText(this, "Invalid username.", Toast
-    //                .LENGTH_SHORT)
-    //                .show();
-    //    }
-    //}
 }

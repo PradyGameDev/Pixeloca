@@ -257,18 +257,6 @@ public class DatabaseManager {
         String referencePath = String.format("posts/%s", tappedPost.getInternalDate());
         DatabaseReference toBeUpdatedReference = database.getReference(referencePath);
         toBeUpdatedReference.setValue(tappedPost);
-        //feedRecyclerViewAdapter.notifyDataSetChanged();
-    }
-
-    public void forceShit() {
-        String referencePath = String.format("posts/trigger/adder");
-        DatabaseReference lul = database.getReference(referencePath);
-        ArrayList<Double> wtf = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            wtf.add(Math.random());
-        }
-        Log.d("lmao", "Writing new things: " + wtf.toString());
-        lul.setValue(wtf);
     }
 
     public void updateComment(Post tappedPost, List<Comment> commentList,
