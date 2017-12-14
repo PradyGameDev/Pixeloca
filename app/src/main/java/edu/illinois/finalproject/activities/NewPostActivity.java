@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -92,10 +93,6 @@ public class NewPostActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
-            case R.id.action_upload_post: {
-                onPostButtonClick();
-                return true;
-            }
             case R.id.action_settings: {
                 Toast.makeText(this, "Opened settings.", Toast.LENGTH_SHORT)
                         .show();
@@ -121,9 +118,10 @@ public class NewPostActivity extends AppCompatActivity {
     /**
      * Called when the Post button on the Toolbar is tapped. Combines the data into a Post object
      * and uploads it to Firebase. Finally, take the user back to the feed activity.
+     * @param v The post button that was clicked
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void onPostButtonClick() {
+    public void onPostButtonClick(View v) {
         storeUserInput();
         photoDatabase.uploadPost(new Post(username, imageLink, caption, location,
                                           internalDate, displayDate, userPhotoUri));
